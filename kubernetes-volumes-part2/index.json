@@ -1,0 +1,47 @@
+{
+  "title": "Kubernetes Volumes 2: Dynamic Provisioning, ConfigMaps & Secrets",
+  "description": "Exam-style practice with StorageClass dynamic provisioning and mounting ConfigMap/Secret data as files",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "Inspect the default StorageClass",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Create a PVC and let it be dynamically provisioned",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Use the PVC and observe the reclaim policy",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Mount a ConfigMap as a volume",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      },
+      {
+        "title": "Mount a Secret as a volume",
+        "text": "step5/text.md",
+        "verify": "step5/verify.sh"
+      },
+      {
+        "title": "Update the ConfigMap and watch it sync live",
+        "text": "step6/text.md",
+        "verify": "step6/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
