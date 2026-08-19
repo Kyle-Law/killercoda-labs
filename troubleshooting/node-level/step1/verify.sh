@@ -8,7 +8,7 @@ SCHED=$(kubectl get node "$NODE" -o jsonpath='{.spec.unschedulable}' 2>/dev/null
 
 for i in $(seq 1 3); do
   RUNNING=$(kubectl get pods -l app=stuck-app --no-headers 2>/dev/null | grep -c "1/1.*Running")
-  [ "$RUNNING" -ge 1 ] || exit 1
+  [ "$RUNNING" -ge 2 ] || exit 1
   sleep 5
 done
 
