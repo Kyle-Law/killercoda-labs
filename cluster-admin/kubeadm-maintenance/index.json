@@ -1,0 +1,38 @@
+{
+  "title": "kubeadm Maintenance: RBAC, Certificates & Tokens",
+  "description": "Grant a real User RBAC access, renew a control-plane certificate, and create a bootstrap token",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "Grant RBAC access to a User (not a ServiceAccount)",
+        "text": "step1/text.md",
+        "background": "step1/background.sh",
+        "foreground": "step1/foreground.sh",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Renew a control-plane certificate",
+        "text": "step2/text.md",
+        "background": "step2/background.sh",
+        "foreground": "step2/foreground.sh",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Create a bootstrap token",
+        "text": "step3/text.md",
+        "background": "step3/background.sh",
+        "foreground": "step3/foreground.sh",
+        "verify": "step3/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
