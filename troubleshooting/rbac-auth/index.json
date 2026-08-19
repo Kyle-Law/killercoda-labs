@@ -1,0 +1,38 @@
+{
+  "title": "Troubleshoot RBAC & Authorization",
+  "description": "Diagnose Forbidden errors from a missing RoleBinding, an incomplete Role, and a namespace-scoped binding to a cluster-scoped resource",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "ServiceAccount can't list Pods: missing RoleBinding",
+        "text": "step1/text.md",
+        "background": "step1/background.sh",
+        "foreground": "step1/foreground.sh",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "ServiceAccount can't create Deployments: incomplete Role",
+        "text": "step2/text.md",
+        "background": "step2/background.sh",
+        "foreground": "step2/foreground.sh",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "ServiceAccount can't list Nodes: wrong binding scope",
+        "text": "step3/text.md",
+        "background": "step3/background.sh",
+        "foreground": "step3/foreground.sh",
+        "verify": "step3/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
