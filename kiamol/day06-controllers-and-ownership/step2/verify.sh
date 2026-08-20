@@ -13,5 +13,5 @@ ORIG_DESIRED=$(kubectl get rs "$ORIGINAL" -o jsonpath='{.spec.replicas}' 2>/dev/
 RS_COUNT=$(kubectl get rs -l app=pi-web --no-headers 2>/dev/null | wc -l)
 [ "$RS_COUNT" -ge 2 ] || exit 1
 
-NEW_READY=$(kubectl get rs -l app=pi-web -o jsonpath='{range .items[?(@.spec.replicas==3)]}{.status.readyReplicas}{end}')
+NEW_READY=$(kubectl get rs -l app=pi-web -o jsonpath='{range .items[*]}{.spec.replicas}:{.status.readyReplicas}{"\n"}{end}' | awk -F: '$1==3{print $2}')
 [ "$NEW_READY" == "3" ]

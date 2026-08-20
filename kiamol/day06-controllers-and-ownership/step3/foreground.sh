@@ -9,4 +9,8 @@ for i in $(seq 1 20); do
   sleep 2
 done
 
+# record the Pod's UID so verify.sh can prove it was genuinely orphaned and
+# re-adopted, rather than deleted and recreated as a fresh object
+kubectl get pod -l app=node-agent -o jsonpath='{.items[0].metadata.uid}' > /root/original-node-agent-uid.txt
+
 echo "Ready. Good luck!"

@@ -13,7 +13,7 @@ Add a **sidecar** container named `logger` (image `busybox`) that mounts the sam
 kubectl get pod legacy-app -o yaml > /root/legacy-app.yaml
 ```{{exec}}
 
-`tail -f <file>` is the whole trick: it keeps running, echoing new lines to stdout as they're written.
+`tail -f <file>` is the core of it: it keeps running, echoing new lines to stdout as they're written. Both containers start at roughly the same time, though — `tail -f` on a file that doesn't exist yet just exits, so the sidecar's command needs to handle that.
 
 </details>
 
@@ -39,7 +39,7 @@ spec:
       mountPath: /logs
   - name: logger
     image: busybox
-    command: ["sh", "-c", "tail -f /logs/app.log"]
+    command: ["sh", "-c", "while [ ! -f /logs/app.log ]; do sleep 1; done; tail -f /logs/app.log"]
     volumeMounts:
     - name: logs
       mountPath: /logs
