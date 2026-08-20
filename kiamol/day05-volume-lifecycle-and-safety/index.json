@@ -1,27 +1,27 @@
 {
-  "title": "Controllers & Object Ownership",
-  "description": "Scale a bare ReplicaSet, see how Deployments manage ReplicaSet churn, and orphan/re-adopt a DaemonSet's Pod",
+  "title": "Kiamol Day 5: Volume Lifecycle & HostPath Safety",
+  "description": "See why a container restart loses unmounted data, restrict a hostPath with subPath, and fix an unrestricted hostPath mount",
   "details": {
     "intro": {
       "text": "intro.md"
     },
     "steps": [
       {
-        "title": "Scale a ReplicaSet directly",
+        "title": "A container restart is not a Pod restart",
         "text": "step1/text.md",
         "background": "step1/background.sh",
         "foreground": "step1/foreground.sh",
         "verify": "step1/verify.sh"
       },
       {
-        "title": "Replica count vs Pod template: what creates a new ReplicaSet",
+        "title": "Restrict a hostPath mount with subPath",
         "text": "step2/text.md",
         "background": "step2/background.sh",
         "foreground": "step2/foreground.sh",
         "verify": "step2/verify.sh"
       },
       {
-        "title": "Orphan and re-adopt a DaemonSet's Pod",
+        "title": "Fix a dangerously unrestricted hostPath",
         "text": "step3/text.md",
         "background": "step3/background.sh",
         "foreground": "step3/foreground.sh",

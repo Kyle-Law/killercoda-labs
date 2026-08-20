@@ -7,6 +7,7 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `networking/` — Services, Ingress, Gateway API
 - `troubleshooting/` — Pods, control plane, Services/DNS, nodes, RBAC, resource usage
 - `cluster-admin/` — etcd backup/restore, kubeadm maintenance
+- `kiamol/` — labs following *Learn Kubernetes in a Month of Lunches*, one per day, covering what the topic-first labs above don't already
 
 `archive/` holds older example scenarios (2022–2024) kept for reference but no longer actively maintained.
 

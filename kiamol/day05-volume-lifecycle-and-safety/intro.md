@@ -1,6 +1,8 @@
 
 <br>
 
+Based on *Learn Kubernetes in a Month of Lunches*, Day 5 — "Storing data with volumes, mounts, and claims." (The core storage concepts from that chapter — emptyDir, hostPath, static/dynamic PV/PVC, ConfigMap/Secret volumes — are covered separately in `storage/volumes-basics` and `storage/volumes-dynamic`; this lab covers what those don't.)
+
 Three things about volumes that don't come up until something's already gone wrong:
 
 1. A Pod's writable filesystem belongs to the **container**, not the Pod — a container restart (not a Pod restart) is enough to lose anything you didn't put in a volume.

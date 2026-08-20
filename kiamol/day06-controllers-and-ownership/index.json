@@ -1,0 +1,38 @@
+{
+  "title": "Kiamol Day 6: Controllers & Object Ownership",
+  "description": "Scale a bare ReplicaSet, see how Deployments manage ReplicaSet churn, and orphan/re-adopt a DaemonSet's Pod",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "Scale a ReplicaSet directly",
+        "text": "step1/text.md",
+        "background": "step1/background.sh",
+        "foreground": "step1/foreground.sh",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Replica count vs Pod template: what creates a new ReplicaSet",
+        "text": "step2/text.md",
+        "background": "step2/background.sh",
+        "foreground": "step2/foreground.sh",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Orphan and re-adopt a DaemonSet's Pod",
+        "text": "step3/text.md",
+        "background": "step3/background.sh",
+        "foreground": "step3/foreground.sh",
+        "verify": "step3/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}

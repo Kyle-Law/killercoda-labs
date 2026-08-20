@@ -1,27 +1,27 @@
 {
-  "title": "Volumes: Container Lifecycle, subPath & HostPath Safety",
-  "description": "See why a container restart loses unmounted data, restrict a hostPath with subPath, and fix an unrestricted hostPath mount",
+  "title": "Kiamol Day 7: Multicontainer Pods",
+  "description": "Shared volumes with different access levels, init container ordering, and the sidecar pattern for log adaptation",
   "details": {
     "intro": {
       "text": "intro.md"
     },
     "steps": [
       {
-        "title": "A container restart is not a Pod restart",
+        "title": "Shared volume, different access levels",
         "text": "step1/text.md",
         "background": "step1/background.sh",
         "foreground": "step1/foreground.sh",
         "verify": "step1/verify.sh"
       },
       {
-        "title": "Restrict a hostPath mount with subPath",
+        "title": "Init containers run before app containers, in order",
         "text": "step2/text.md",
         "background": "step2/background.sh",
         "foreground": "step2/foreground.sh",
         "verify": "step2/verify.sh"
       },
       {
-        "title": "Fix a dangerously unrestricted hostPath",
+        "title": "Sidecar: adapt file-based logs to stdout",
         "text": "step3/text.md",
         "background": "step3/background.sh",
         "foreground": "step3/foreground.sh",
