@@ -1,5 +1,7 @@
 
-Deployment `web` has been through 3 releases. Find which revision ran `nginx:1.26-alpine`, then restore **exactly that revision** — not just "the previous one."
+Deployment `web` has been through 3 releases. The current one is broken — its change-cause records it as `bad release - checkout errors`.
+
+Roll back to the release recorded in the history as **`last known good`**. You'll need to consult the rollout history to work out which revision that is, and restore *exactly* that revision — not just "the previous one."
 
 <br>
 
@@ -7,26 +9,35 @@ Deployment `web` has been through 3 releases. Find which revision ran `nginx:1.2
 
 ```
 kubectl rollout history deployment/web
-kubectl rollout history deployment/web --revision=2
 ```{{exec}}
 
-`change-cause` in the history list is just a hint — confirm the actual image with `--revision=N` before you commit to a number.
+That lists each revision with its change-cause. To see what a particular revision actually deployed:
+
+```
+kubectl rollout history deployment/web --revision=2
+```{{exec}}
 
 </details>
 
 <details><summary>Solution</summary>
 
 ```
-kubectl rollout history deployment/web --revision=1
-kubectl rollout history deployment/web --revision=2
-kubectl rollout history deployment/web --revision=3
+kubectl rollout history deployment/web
 ```{{exec}}
 
-Revision 2 shows `nginx:1.26-alpine`.
+Revision 2 is the one annotated `last known good`. Confirm what it deployed before committing to it:
+
+```
+kubectl rollout history deployment/web --revision=2
+```{{exec}}
 
 ```
 kubectl rollout undo deployment/web --to-revision=2
 kubectl rollout status deployment/web
+```{{exec}}
+
+```
+kubectl get deployment web -o jsonpath='{.spec.template.spec.containers[0].image}'
 ```{{exec}}
 
 </details>
