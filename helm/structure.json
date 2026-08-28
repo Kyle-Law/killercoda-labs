@@ -1,0 +1,14 @@
+{
+  "items": [
+    { "path": "getting-started" },
+    { "path": "release-basics" },
+    { "path": "chart-versions" },
+    { "path": "inspect-charts" },
+    { "path": "release-details" },
+    { "path": "revisions-and-rollbacks" },
+    { "path": "safe-deploys" },
+    { "path": "values-and-overrides" },
+    { "path": "config-driven-rollouts" },
+    { "path": "template-conditionals" }
+  ]
+}

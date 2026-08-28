@@ -7,6 +7,7 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `networking/` — Services, Ingress, Gateway API
 - `troubleshooting/` — Pods, control plane, Services/DNS, nodes, RBAC, resource usage
 - `cluster-admin/` — etcd backup/restore, kubeadm maintenance
+- `helm/` — Helm end to end: releases, chart versions, values, rollbacks, safe deploys, templating
 - `observability/` — the operator pattern, Prometheus Operator, ServiceMonitors
 - `packaging/` — Helm beyond the basics (failed upgrades and recovery, values file precedence)
 - `kiamol/` — labs following *Learn Kubernetes in a Month of Lunches*, one per day, covering what the topic-first labs above don't already
