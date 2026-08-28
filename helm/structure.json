@@ -9,6 +9,7 @@
     { "path": "safe-deploys" },
     { "path": "values-and-overrides" },
     { "path": "config-driven-rollouts" },
-    { "path": "template-conditionals" }
+    { "path": "template-conditionals" },
+    { "path": "package-your-app" }
   ]
 }
