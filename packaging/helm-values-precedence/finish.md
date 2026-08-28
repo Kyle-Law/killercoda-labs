@@ -14,3 +14,5 @@
 None of this changes what a chart *is* — it's still just a template plus a values tree. What changes step to step is which values tree Helm builds before it renders anything, and that's entirely a function of what you pass and in what order.
 
 Most upgrades here succeeded on the first try — the one that didn't (the bare list-index override) failed for a reason worth knowing, not by accident. For what happens — and how to recover — when a failure isn't self-inflicted like that, see `packaging/helm-failed-upgrades`.
+
+This lab assumed you already know `--set` and `-f` exist — for that starting point, see `helm/values-and-overrides`.

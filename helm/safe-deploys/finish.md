@@ -8,4 +8,6 @@
 - `--rollback-on-failure` replaces Helm 3's `--atomic`: on failure the release reverts instead of leaving a half-applied mess. `--atomic` still works but warns that it's deprecated.
 - `--cleanup-on-fail` deletes resources newly created by a failed upgrade, which `--rollback-on-failure` alone doesn't do.
 
+Next: `packaging/helm-failed-upgrades` isolates each failure mode one at a time — including the naive case with no `--wait` at all, where `STATUS: deployed` doesn't mean the Pod ever came up — and covers reviving a release after `helm uninstall`.
+
 ### Happy Helming!

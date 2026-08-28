@@ -13,3 +13,5 @@
 The pattern across all three recovery flags is the same one from `kubectl rollout status --timeout` and `kubectl rollout undo`: Helm's release status is only ever as honest as the checks you ask it to run, and "roll back" always means "create something new that looks like something old" — never rewinding time.
 
 None of the broken upgrades here needed more than one `--set`. For what happens once real installs layer `-f` files and `--set` on top of each other, see `packaging/helm-values-precedence`.
+
+This lab didn't touch `--dry-run` or `--cleanup-on-fail` — see `helm/safe-deploys` for those, plus a look at the wider Helm plugin ecosystem.

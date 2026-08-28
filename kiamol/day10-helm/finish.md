@@ -13,3 +13,5 @@
 Everything here maps directly onto what you already know from `kubectl rollout` — Helm just adds a packaging and versioning layer on top of the same underlying Kubernetes objects.
 
 Every release above went smoothly. For what happens — and how to recover — when an upgrade doesn't, see `packaging/helm-failed-upgrades`. For the layering rules behind `-f` and `--set` themselves, see `packaging/helm-values-precedence`.
+
+Two more to branch out from: `helm/chart-versions` for version-constraint syntax (`~6.5`, `^6.5`) beyond a single pinned version, and `helm/revisions-and-rollbacks` for diagnosing *which* past revision to roll back to with `helm get values --revision N`, rather than already knowing.
