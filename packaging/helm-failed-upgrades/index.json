@@ -1,0 +1,45 @@
+{
+  "title": "Helm: Failed Upgrades & Recovery",
+  "description": "What 'deployed' actually means, --wait vs --atomic, and bringing a release back from the dead with --keep-history",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "\"Deployed\" doesn't mean healthy",
+        "text": "step1/text.md",
+        "background": "step1/background.sh",
+        "foreground": "step1/foreground.sh",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Ask Helm to check first: --wait",
+        "text": "step2/text.md",
+        "background": "step2/background.sh",
+        "foreground": "step2/foreground.sh",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Let Helm undo it for you: --atomic",
+        "text": "step3/text.md",
+        "background": "step3/background.sh",
+        "foreground": "step3/foreground.sh",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Uninstall isn't always the end",
+        "text": "step4/text.md",
+        "background": "step4/background.sh",
+        "foreground": "step4/foreground.sh",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}

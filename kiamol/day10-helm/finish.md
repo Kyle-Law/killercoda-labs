@@ -11,3 +11,5 @@
 ### WELL DONE!
 
 Everything here maps directly onto what you already know from `kubectl rollout` — Helm just adds a packaging and versioning layer on top of the same underlying Kubernetes objects.
+
+Every release above went smoothly. For what happens — and how to recover — when an upgrade doesn't, see `packaging/helm-failed-upgrades`. For the layering rules behind `-f` and `--set` themselves, see `packaging/helm-values-precedence`.

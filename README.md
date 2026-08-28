@@ -8,6 +8,7 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `troubleshooting/` — Pods, control plane, Services/DNS, nodes, RBAC, resource usage
 - `cluster-admin/` — etcd backup/restore, kubeadm maintenance
 - `observability/` — the operator pattern, Prometheus Operator, ServiceMonitors
+- `packaging/` — Helm beyond the basics (failed upgrades and recovery, values file precedence)
 - `kiamol/` — labs following *Learn Kubernetes in a Month of Lunches*, one per day, covering what the topic-first labs above don't already
 
 `archive/` holds older example scenarios (2022–2024) kept for reference but no longer actively maintained.

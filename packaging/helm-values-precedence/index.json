@@ -1,0 +1,45 @@
+{
+  "title": "Helm: Values Files & Precedence",
+  "description": "Trimmed override files, layering -f and --set, get values vs get values -a, and the special-syntax flags: --set-file, --set-string, list indices",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "A values file only needs your overrides",
+        "text": "step1/text.md",
+        "background": "step1/background.sh",
+        "foreground": "step1/foreground.sh",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Layering -f and --set: who wins?",
+        "text": "step2/text.md",
+        "background": "step2/background.sh",
+        "foreground": "step2/foreground.sh",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "get values vs get values -a, and --reuse-values",
+        "text": "step3/text.md",
+        "background": "step3/background.sh",
+        "foreground": "step3/foreground.sh",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "The other --set flags: file, string, index",
+        "text": "step4/text.md",
+        "background": "step4/background.sh",
+        "foreground": "step4/foreground.sh",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
