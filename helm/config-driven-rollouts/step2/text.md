@@ -15,7 +15,7 @@ You are overriding the message. Does the pod take this change in consideration?
 helm upgrade -h
 ```{{exec}}
 
-Same technique as the [override-values](https://killercoda.com/helm/scenario/override-values) scenario.
+Same technique as the *Customising with Values* scenario.
 
 </details>
 

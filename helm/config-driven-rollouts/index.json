@@ -1,5 +1,5 @@
 {
-  "title": "Automatic Rollout Deployment",
+  "title": "Rollouts on Config Change",
   "description": "Automatically roll out a Deployment when its ConfigMap changes",
   "details": {
     "intro": {

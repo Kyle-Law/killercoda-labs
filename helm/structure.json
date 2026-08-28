@@ -1,14 +1,14 @@
 {
   "items": [
-    { "path": "install" },
-    { "path": "use" },
-    { "path": "use-the-search" },
-    { "path": "pull-show" },
-    { "path": "helm-get" },
-    { "path": "history-rollback" },
-    { "path": "production" },
-    { "path": "override-values" },
-    { "path": "automatic-roll-deployment" },
-    { "path": "conditional-deployment" }
+    { "path": "getting-started" },
+    { "path": "release-basics" },
+    { "path": "chart-versions" },
+    { "path": "inspect-charts" },
+    { "path": "release-details" },
+    { "path": "revisions-and-rollbacks" },
+    { "path": "safe-deploys" },
+    { "path": "values-and-overrides" },
+    { "path": "config-driven-rollouts" },
+    { "path": "template-conditionals" }
   ]
 }

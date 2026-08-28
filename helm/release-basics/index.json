@@ -1,6 +1,6 @@
 {
-  "title": "Helm get",
-  "description": "How to get details of installed releases",
+  "title": "Working with Releases",
+  "description": "List, install and delete Helm releases",
   "details": {
     "intro": {
       "text": "intro.md",
@@ -9,17 +9,17 @@
     },
     "steps": [
       {
-        "title": "Get notes",
+        "title": "Find all Helm releases in the cluster",
         "text": "step1/text.md",
         "verify": "step1/verify.sh"
       },
       {
-        "title": "Get values",
+        "title": "Delete a Helm release",
         "text": "step2/text.md",
         "verify": "step2/verify.sh"
       },
       {
-        "title": "Get manifest",
+        "title": "Install a Helm chart",
         "text": "step3/text.md",
         "verify": "step3/verify.sh"
       }

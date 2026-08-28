@@ -1,6 +1,6 @@
 {
-  "title": "Helm pull and show",
-  "description": "How to download and inspect charts",
+  "title": "Finding Chart Versions",
+  "description": "How to search for and install a specific version of a chart",
   "details": {
     "intro": {
       "text": "intro.md",
@@ -9,12 +9,12 @@
     },
     "steps": [
       {
-        "title": "Inspect a chart",
+        "title": "Search",
         "text": "step1/text.md",
         "verify": "step1/verify.sh"
       },
       {
-        "title": "Download a chart",
+        "title": "Search and install",
         "text": "step2/text.md",
         "verify": "step2/verify.sh"
       }

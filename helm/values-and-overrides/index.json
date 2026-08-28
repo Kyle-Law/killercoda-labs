@@ -1,5 +1,5 @@
 {
-  "title": "Override values",
+  "title": "Customising with Values",
   "description": "Override and modify values in a Helm chart",
   "details": {
     "intro": {
