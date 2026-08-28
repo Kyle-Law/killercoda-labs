@@ -1,0 +1,47 @@
+{
+  "title": "Automatic Rollout Deployment",
+  "description": "Automatically roll out a Deployment when its ConfigMap changes",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "Explore the deployed chart",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Update the ConfigMap value",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "See why the Pod didn't change",
+        "text": "step3/text.md"
+      },
+      {
+        "title": "Manual rollout restart",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      },
+      {
+        "title": "Add the checksum annotation",
+        "text": "step5/text.md"
+      },
+      {
+        "title": "Verify the automatic rollout",
+        "text": "step6/text.md",
+        "verify": "step6/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
