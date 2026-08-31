@@ -10,6 +10,7 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `helm/` — Helm end to end: releases, chart versions, values, rollbacks, safe deploys, templating
 - `gitops/` — Argo CD: sync vs health, drift detection, self-heal
 - `observability/` — the operator pattern, Prometheus Operator, ServiceMonitors
+- `packaging/` — Helm beyond the basics (failed upgrades and recovery, values file precedence)
 - `kiamol/` — labs following *Learn Kubernetes in a Month of Lunches*, one per day, covering what the topic-first labs above don't already
 
 `archive/` holds older example scenarios (2022–2024) kept for reference but no longer actively maintained.
