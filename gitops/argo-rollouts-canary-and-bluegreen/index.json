@@ -1,0 +1,45 @@
+{
+  "title": "Argo Rollouts: Canary & Blue-Green",
+  "description": "Weighted canary steps, indefinite vs timed pauses, abort vs promote, and blue-green's instant full cutover instead of a gradual shift",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "The first rollout has nothing to canary against",
+        "text": "step1/text.md",
+        "background": "step1/background.sh",
+        "foreground": "step1/foreground.sh",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Indefinite pause vs timed pause",
+        "text": "step2/text.md",
+        "background": "step2/background.sh",
+        "foreground": "step2/foreground.sh",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "abort isn't a quiet revert",
+        "text": "step3/text.md",
+        "background": "step3/background.sh",
+        "foreground": "step3/foreground.sh",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Blue-green: full capacity, instant cutover",
+        "text": "step4/text.md",
+        "background": "step4/background.sh",
+        "foreground": "step4/foreground.sh",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
