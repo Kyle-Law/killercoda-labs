@@ -1,0 +1,45 @@
+{
+  "title": "Argo CD: App-of-Apps & ApplicationSet",
+  "description": "One Application managing many, cascading deletion through a finalizer, and ApplicationSet's list vs git-directory generators",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "One Application, many independent children",
+        "text": "step1/text.md",
+        "background": "step1/background.sh",
+        "foreground": "step1/foreground.sh",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Removing a child prunes it, resources included",
+        "text": "step2/text.md",
+        "background": "step2/background.sh",
+        "foreground": "step2/foreground.sh",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "ApplicationSet: a list generator",
+        "text": "step3/text.md",
+        "background": "step3/background.sh",
+        "foreground": "step3/foreground.sh",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "A git-directory generator keeps discovering, and un-discovering",
+        "text": "step4/text.md",
+        "background": "step4/background.sh",
+        "foreground": "step4/foreground.sh",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
