@@ -8,7 +8,7 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `troubleshooting/` — Pods, control plane, Services/DNS, nodes, RBAC, resource usage
 - `cluster-admin/` — etcd backup/restore, kubeadm maintenance
 - `helm/` — Helm end to end: releases, chart versions, values, rollbacks, safe deploys, templating
-- `gitops/` — Argo CD: sync/health, drift & self-heal, sync waves & hooks, Helm/Kustomize sources, history & rollback, App-of-Apps & ApplicationSet, the full UI on a multi-node cluster, a self-hosted Gitea source; plus standalone Argo Rollouts canary & blue-green
+- `gitops/` — Argo CD: sync/health, drift & self-heal, sync waves & hooks, Helm/Kustomize sources, history & rollback, App-of-Apps & ApplicationSet, the full UI on a multi-node cluster, a self-hosted Gitea source, Gitea webhooks with auto-sync/self-heal/prune; plus standalone Argo Rollouts canary & blue-green
 - `observability/` — the operator pattern, Prometheus Operator, ServiceMonitors
 - `packaging/` — Helm beyond the basics (failed upgrades and recovery, values file precedence)
 - `kiamol/` — labs following *Learn Kubernetes in a Month of Lunches*, one per day, covering what the topic-first labs above don't already
