@@ -1,0 +1,30 @@
+{{- range .Values.environments }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: podinfo-{{ .name }}
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://stefanprodan.github.io/podinfo
+    chart: podinfo
+    targetRevision: "6.5.4"
+    helm:
+      valuesObject:
+        replicaCount: {{ .replicaCount }}
+        ui:
+          color: {{ .color | quote }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: podinfo-{{ .name }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+{{- end }}

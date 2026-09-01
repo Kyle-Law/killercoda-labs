@@ -1,0 +1,45 @@
+{
+  "title": "Argo CD: A Declarative App-of-Apps, Helm All the Way Down",
+  "description": "One hand-written, kubectl-applied parent Application whose children are themselves real Helm-chart deployments, one per environment, values and all",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "Write the parent yourself, values object and all",
+        "text": "step1/text.md",
+        "background": "step1/background.sh",
+        "foreground": "step1/foreground.sh",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Add an environment without touching the chart",
+        "text": "step2/text.md",
+        "background": "step2/background.sh",
+        "foreground": "step2/foreground.sh",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Change one child's values, leave its siblings alone",
+        "text": "step3/text.md",
+        "background": "step3/background.sh",
+        "foreground": "step3/foreground.sh",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Remove an environment, cascade delete its real resources",
+        "text": "step4/text.md",
+        "background": "step4/background.sh",
+        "foreground": "step4/foreground.sh",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
