@@ -1,0 +1,4 @@
+apiVersion: v2
+name: podinfo-envs
+description: Renders one Argo CD Application per entry in .Values.environments, each sourcing the real podinfo Helm chart with its own values
+version: 0.1.0
