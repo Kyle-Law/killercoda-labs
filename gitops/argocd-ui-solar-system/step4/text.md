@@ -8,7 +8,7 @@ Repeat exactly what you did last step: `kubectl set image` straight to `v9`, no 
 <details><summary>Tip</summary>
 
 ```
-kubectl set image deployment/solar-system solar-system=siddharth67/solar-system:v9 -n solar-system
+kubectl set image deployment/solar-system solar-system=handafew/solar-system:v9 -n solar-system
 ```{{exec}}
 
 Last step, reverting the drift took exactly as long as it took you to notice and click **Sync**. This time there's nothing to click — time how long it actually takes on its own.

@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: solar-system
-        image: siddharth67/solar-system:v3
+        image: handafew/solar-system:v3
         ports:
         - containerPort: 80
         readinessProbe:

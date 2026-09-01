@@ -2,7 +2,7 @@
 `solar-system` is `Synced`/`Healthy` on `v3` again. From the terminal — not the UI — bump it straight to `v9`, bypassing Argo CD entirely:
 
 ```
-kubectl set image deployment/solar-system solar-system=siddharth67/solar-system:v9 -n solar-system
+kubectl set image deployment/solar-system solar-system=handafew/solar-system:v9 -n solar-system
 ```{{exec}}
 
 Reload the app in your browser tab — it should look different. Now switch back to the Argo CD UI. The app card shows `OutOfSync`. Before clicking anything, predict what pressing **SYNC** does: does it accept `v9` as the new normal, or does it do something else? Then click it, and check the app in your browser again.
