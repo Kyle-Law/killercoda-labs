@@ -1,0 +1,45 @@
+{
+  "title": "Argo CD + Gitea: Webhooks, Auto-Sync & Auto-Prune",
+  "description": "Replace Argo CD's polling with a real Gitea webhook, then let automated sync — self-heal and prune included — do the rest without a human ever clicking Sync",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "Push the app, wire up automated sync from the start",
+        "text": "step1/text.md",
+        "background": "step1/background.sh",
+        "foreground": "step1/foreground.sh",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Webhook: push to instant sync, not a multi-minute poll",
+        "text": "step2/text.md",
+        "background": "step2/background.sh",
+        "foreground": "step2/foreground.sh",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Self-heal: drift reverted before you can even check",
+        "text": "step3/text.md",
+        "background": "step3/background.sh",
+        "foreground": "step3/foreground.sh",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Auto-prune: delete it from Git, watch it vanish from the cluster",
+        "text": "step4/text.md",
+        "background": "step4/background.sh",
+        "foreground": "step4/foreground.sh",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}
