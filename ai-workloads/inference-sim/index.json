@@ -1,0 +1,39 @@
+{
+  "title": "Simulating an LLM Inference Server",
+  "description": "Run a GPU-free, OpenAI-compatible vLLM simulator on Kubernetes: deploy it, configure it, probe it, break it, and scrape its metrics",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "Deploy the simulator and talk to it",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Configure it with a ConfigMap",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Health probes and failure injection",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Scrape the vLLM metrics",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
