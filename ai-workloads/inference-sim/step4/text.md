@@ -36,7 +36,6 @@ for i in $(seq 1 5); do
     -H 'Content-Type: application/json' \
     -d '{"model":"dummy-model","messages":[{"role":"user","content":"generate some tokens please"}]}'
 done
-echo "sent 5 requests"
 ```{{exec}}
 
 Scrape again and save it:

@@ -14,7 +14,7 @@ Then call it and save the model list to `/root/models.json`.
 
 The simulator never loads weights — it generates responses from a probabilistic model of what vLLM *would* return. `--model` is just the name it reports and answers to; any string works.
 
-Leave `--render-url` unset. It only matters when you want real HuggingFace tokenisation, which is what upstream's heavyweight sidecar provides. Unset, the simulator uses a built-in tokenizer.
+Leave `--render-url` unset. It only matters when you want real HuggingFace tokenisation, which is what upstream's heavyweight sidecar provides. Unset, the simulator uses its built-in tokenizer.
 
 </details>
 
@@ -77,8 +77,7 @@ kubectl rollout status deployment/sim
 Ask it which models it serves:
 
 ```plain
-curl -s http://localhost:30800/v1/models
-echo
+curl -s -w '\n' http://localhost:30800/v1/models
 ```{{exec}}
 
 ```plain
@@ -88,10 +87,9 @@ curl -s http://localhost:30800/v1/models > /root/models.json
 Now send it an actual chat completion — the same request shape you'd send to OpenAI or a real vLLM:
 
 ```plain
-curl -s http://localhost:30800/v1/chat/completions \
+curl -s -w '\n' http://localhost:30800/v1/chat/completions \
   -H 'Content-Type: application/json' \
   -d '{"model":"dummy-model","messages":[{"role":"user","content":"Hello there"}]}'
-echo
 ```{{exec}}
 
 </details>

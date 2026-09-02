@@ -1,12 +1,24 @@
 
 A real inference server has two different questions to answer: *"are you alive?"* and *"should I send you traffic?"* The simulator exposes both, and they are not the same endpoint.
 
-Wire them into the Deployment:
+**1.** Add both probes to the container in the Deployment:
 
-- a **liveness** probe on `/health`
-- a **readiness** probe on `/health/ready`
+```yaml
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+```
 
-Then use the simulator's failure injection to make it return errors on demand, and save one failing response's status code to `/root/injected-status`.
+**2.** Then use the simulator's failure injection to make it return errors on demand, and save one failing response's status code to `/root/injected-status`.
 
 <br>
 
@@ -33,16 +45,50 @@ It returns exactly that status. There's also a probabilistic `--failure-injectio
 
 <details><summary>Solution</summary>
 
+Either `kubectl edit deployment sim` and paste the two probes into the container, or apply the finished Deployment:
+
 ```plain
-kubectl patch deployment sim --type merge -p '{
-  "spec": {"template": {"spec": {
-    "containers": [{
-      "name": "sim",
-      "livenessProbe":  {"httpGet": {"path": "/health",       "port": 8000}, "initialDelaySeconds": 5, "periodSeconds": 10},
-      "readinessProbe": {"httpGet": {"path": "/health/ready", "port": 8000}, "initialDelaySeconds": 3, "periodSeconds": 5}
-    }]
-  }}}
-}'
+cat <<'YAML' | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sim
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sim
+  template:
+    metadata:
+      labels:
+        app: sim
+    spec:
+      containers:
+        - name: sim
+          image: ghcr.io/llm-d/llm-d-inference-sim:v0.11.2
+          args: ["--config", "/config/config.yaml"]
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: sim-config
+YAML
 ```{{exec}}
 
 ```plain
