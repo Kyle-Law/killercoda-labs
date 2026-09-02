@@ -43,6 +43,7 @@ data:
   prometheus.yml: |
     global:
       scrape_interval: 5s
+      evaluation_interval: 5s
     scrape_configs:
       - job_name: vllm-sim
         static_configs:

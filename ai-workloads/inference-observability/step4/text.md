@@ -97,6 +97,7 @@ data:
   prometheus.yml: |
     global:
       scrape_interval: 5s
+      evaluation_interval: 5s
     rule_files:
       - /etc/prometheus/rules.yml
     scrape_configs:
