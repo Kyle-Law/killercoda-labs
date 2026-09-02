@@ -9,7 +9,7 @@ kubectl delete configmap site
 
 Create a chart at `/root/charts/site` that produces the **same three resources**, and install it as a release named `dev`. Requirements:
 
-- the chart reads the real `index.html` from a file inside the chart, not from HTML pasted into a template
+- the chart keeps `index.html` as a real file at `files/index.html` inside the chart, read into the ConfigMap rather than pasted into a template
 - `replicaCount` and `service.nodePort` come from values, defaulting to `1` and `30080`
 - resources are named after the release, so a second release won't clash
 

@@ -2,6 +2,10 @@
 
 kubectl get configmap site >/dev/null 2>&1 || exit 1
 
+# the task asks for a Deployment specifically - without this a bare Pod
+# plus a Service would satisfy every other check here
+kubectl get deployment site >/dev/null 2>&1 || exit 1
+
 TYPE=$(kubectl get svc site -o jsonpath='{.spec.type}' 2>/dev/null)
 [ "$TYPE" == "NodePort" ] || exit 1
 

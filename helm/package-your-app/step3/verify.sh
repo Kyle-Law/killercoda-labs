@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# the environment must come from the value, not be hardcoded in the HTML -
-# rendering the chart with a different value has to change the output
+# the HTML file itself must carry the value reference - otherwise the page
+# could have been inlined into the template with files/index.html left stale
+grep -q "Values.environment" /root/charts/site/files/index.html 2>/dev/null || exit 1
+
+# and the environment must genuinely come from the value: re-render with a
+# third value the task never mentions, so a hardcoded "dev" cannot follow it
 RENDER=$(helm template probe /root/charts/site --set environment=staging 2>/dev/null)
 echo "$RENDER" | grep -q "Hello from staging" || exit 1
 
