@@ -1,0 +1,44 @@
+{
+  "title": "How Clusters Share Scarce Accelerators",
+  "description": "Advertise GPUs on a node that has none, then learn accelerator scarcity, quota, preemption and gang deadlock exactly as a real GPU cluster behaves",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "Advertise GPUs on a node that has none",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Accelerators are not like CPU",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Quota: two teams, one pool",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Preemption: production takes capacity back",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      },
+      {
+        "title": "Gang deadlock: why Kueue and Volcano exist",
+        "text": "step5/text.md",
+        "verify": "step5/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
