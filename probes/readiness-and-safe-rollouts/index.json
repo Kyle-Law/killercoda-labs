@@ -1,0 +1,39 @@
+{
+  "title": "Probes: Readiness Is What Makes a Rollout Safe",
+  "description": "A rolling update with no readiness probe will report success while serving nothing — build up the four settings that turn a bad deploy into a contained, non-zero-exit failure",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "A rollout that reports success while the app serves nothing",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "The same bad deploy, contained by a readiness probe",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Ready once is not working: the rollout that passes and still dies",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "The full safe-deploy configuration",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
