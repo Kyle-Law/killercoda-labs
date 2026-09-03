@@ -4,7 +4,7 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 
 - `storage/` — PV/PVC, StorageClass, ConfigMap/Secret volumes
 - `workloads/` — Deployments, rollouts/rollbacks, CronJobs, scheduling constraints
-- `probes/` — liveness vs readiness vs startup: what each one actually does on failure, and the outages from confusing them
+- `probes/` — liveness vs readiness vs startup: what each one actually does on failure, the outages from confusing them, and why readiness is what makes a rolling update safe at all
 - `networking/` — Services, Ingress, Gateway API
 - `troubleshooting/` — Pods, control plane, Services/DNS, nodes, RBAC, resource usage
 - `cluster-admin/` — etcd backup/restore, kubeadm maintenance
