@@ -1,0 +1,39 @@
+{
+  "title": "NetworkPolicy: There Is No Deny Rule",
+  "description": "Policies only ever allow — but selecting a Pod flips it to deny-by-default. Build a least-privilege three-tier namespace and watch a connectivity matrix close, one policy at a time",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "One policy, and only one thing changes",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "policyTypes: naming a direction you write no rules for",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Deny the whole namespace without breaking what already works",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Least privilege: web to api to db, and nothing else",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
