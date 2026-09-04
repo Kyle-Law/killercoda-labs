@@ -1,0 +1,39 @@
+{
+  "title": "Kustomize: Overlays, and the Hash That Restarts Your Pods",
+  "description": "One base, many overlays, no templating — then configMapGenerator's name hash, and why editing a ConfigMap in place leaves your Pods silently running the old value",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "A base, an overlay, and no cluster required",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "A second overlay, and one change in the base",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "configMapGenerator: the suffix and the rewritten reference",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "The rollout you get for free, and the one you throw away",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
