@@ -44,6 +44,9 @@ Now throw it away:
 
 ```plain
 cat > /root/app/base/kustomization.yaml <<'EOF'
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
   - deployment.yaml
   - service.yaml

@@ -22,6 +22,9 @@ For the upgrade, ask where the image belongs. It's the same in every environment
 ```plain
 mkdir -p /root/app/overlays/prod
 cat > /root/app/overlays/prod/kustomization.yaml <<'EOF'
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
   - ../../base
 
