@@ -46,12 +46,18 @@ spec:
 EOF
 
 cat > /root/app/base/kustomization.yaml <<'EOF'
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
   - deployment.yaml
   - service.yaml
 EOF
 
 cat > /root/app/overlays/dev/kustomization.yaml <<'EOF'
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
   - ../../base
 
