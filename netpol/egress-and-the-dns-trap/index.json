@@ -1,0 +1,39 @@
+{
+  "title": "NetworkPolicy: Egress and the DNS Trap",
+  "description": "The single most common outage-causing NetworkPolicy mistake: default-deny egress blocks DNS, and the failure looks exactly like an application bug",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "Default-deny egress, and an error that lies about its cause",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "DNS resolves. The app is still down.",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Both ends have to agree — egress and ingress are separate votes",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "namespaceSelector alone opens more than DNS",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
