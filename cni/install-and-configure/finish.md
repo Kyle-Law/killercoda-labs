@@ -19,10 +19,10 @@
 
 This cluster now has `kubeProxyReplacement=true` and Hubble collecting flows, which is the platform the rest of the CKNE material assumes:
 
-- [`ckne/02-services-and-dns/kube-proxy-and-the-datapath`](../../02-services-and-dns/kube-proxy-and-the-datapath/) — iptables vs IPVS vs eBPF, at scale
-- [`ckne/05-observability/flow-logs-and-drops`](../../05-observability/flow-logs-and-drops/) — Hubble as a debugging tool rather than a demo
-- [`ckne/04-security-and-policy/pod-identity-and-l7`](../../04-security-and-policy/pod-identity-and-l7/) — identity-based policy, the `ID:` numbers in the Hubble output above
+- [`ckne/02-services-and-dns/kube-proxy-and-the-datapath`](../../ckne/02-services-and-dns/kube-proxy-and-the-datapath/) — iptables vs IPVS vs eBPF, at scale
+- [`ckne/05-observability/flow-logs-and-drops`](../../ckne/05-observability/flow-logs-and-drops/) — Hubble as a debugging tool rather than a demo
+- [`ckne/04-security-and-policy/pod-identity-and-l7`](../../ckne/04-security-and-policy/pod-identity-and-l7/) — identity-based policy, the `ID:` numbers in the Hubble output above
 
-For NetworkPolicy itself, [`netpol/allow-only-and-default-deny`](../../../netpol/allow-only-and-default-deny/) and [`netpol/egress-and-the-dns-trap`](../../../netpol/egress-and-the-dns-trap/) pick up exactly where step 2 left off — on a cluster where policy is enforced.
+For NetworkPolicy itself, [`netpol/allow-only-and-default-deny`](../../netpol/allow-only-and-default-deny/) and [`netpol/egress-and-the-dns-trap`](../../netpol/egress-and-the-dns-trap/) pick up exactly where step 2 left off — on a cluster where policy is enforced.
 
-> Everything here was done on a single node, which hides the hardest part of the job: getting a packet from a Pod on one node to a Pod on another. [`ckne/01-core-cni/ipam-and-pod-cidr`](../ipam-and-pod-cidr/) takes that on.
+> Everything here was done on a single node, which hides the hardest part of the job: getting a packet from a Pod on one node to a Pod on another. [`ckne/01-core-cni/ipam-and-pod-cidr`](../../ckne/01-core-cni/ipam-and-pod-cidr/) takes that on.
