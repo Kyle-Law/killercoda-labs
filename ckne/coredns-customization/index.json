@@ -1,0 +1,39 @@
+{
+  "title": "Customizing CoreDNS",
+  "description": "The Corefile as a configuration file rather than a black box: stub domains, rewrites, why plugin order in the file is not execution order, and why a broken Corefile is dangerous precisely because nothing breaks",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "Make the Corefile tell you what it's doing",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "A zone this cluster doesn't own",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "A name that isn't a Service",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Break it, and notice what doesn't happen",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}

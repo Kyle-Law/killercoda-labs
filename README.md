@@ -6,7 +6,6 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `workloads/` — Deployments, rollouts/rollbacks, CronJobs, scheduling constraints
 - `probes/` — liveness vs readiness vs startup: what each one actually does on failure, the outages from confusing them, and why readiness is what makes a rolling update safe at all
 - `kustomize/` — bases and overlays with no templating, and generators whose name hash turns a config change into a rolling update
-- `cni/` — the pod network itself: what the kubelet is waiting for when a node won't go `Ready`, and what "installing a CNI" actually writes to a node
 - `netpol/` — NetworkPolicy: why an allow-only API is how you block things, and the traps in `policyTypes` and selector scope
 - `networking/` — Services, Ingress, Gateway API
 - `troubleshooting/` — Pods, control plane, Services/DNS, nodes, RBAC, resource usage
@@ -18,7 +17,7 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `packaging/` — Helm beyond the basics (failed upgrades and recovery, values file precedence)
 - `kiamol/` — labs following *Learn Kubernetes in a Month of Lunches*, one per day, covering what the topic-first labs above don't already
 
-`ckne/` maps the [CKNE](ckne/README.md) networking exam domains onto the topic labs above and holds design specs for the ones not built yet. It is a map, not a home: finished labs move into a topic folder, both to keep a lab reusable across certifications and because Killercoda only indexes scenarios two levels deep.
+`ckne/` — labs for the [CKNE](ckne/README.md) networking exam, plus a roadmap mapping the five exam domains onto them. Built labs sit directly under `ckne/`; the numbered domain folders inside hold design specs for the ones not written yet. Where a domain is already covered by a topic lab above, the roadmap links to it rather than duplicating it.
 
 `archive/` holds older example scenarios (2022–2024) kept for reference but no longer actively maintained.
 
