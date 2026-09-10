@@ -17,6 +17,8 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `packaging/` — Helm beyond the basics (failed upgrades and recovery, values file precedence)
 - `kiamol/` — labs following *Learn Kubernetes in a Month of Lunches*, one per day, covering what the topic-first labs above don't already
 
+`ckne/` maps the [CKNE](ckne/README.md) networking exam domains onto labs — indexing the topic labs above rather than duplicating them, and holding design specs for the networking labs that have no topic home yet.
+
 `archive/` holds older example scenarios (2022–2024) kept for reference but no longer actively maintained.
 
 Based on https://github.com/killercoda/scenario-examples — see these in action at https://killercoda.com/examples, and scenario authoring docs at https://killercoda.com/creators.
