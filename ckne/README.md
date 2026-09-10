@@ -25,7 +25,7 @@ Roughly a third of these labs depend on which CNI features are available — flo
 transparent encryption, egress gateway, L7 policy. The original plan was to discover what the Killercoda
 `kubernetes-kubeadm-*` backend happens to ship with and work within it.
 
-[`01-core-cni/install-and-configure`](01-core-cni/install-and-configure/) makes that question moot. Its
+[`cni/install-and-configure`](../cni/install-and-configure/) makes that question moot. Its
 `init/background.sh` removes whatever CNI the backend arrived with — identifying it generically, by the one
 thing only a CNI does: hostPath-mounting `/etc/cni/net.d` — and the lab then installs Cilium 1.19.7 at a
 pinned version with `kubeProxyReplacement=true` and Hubble enabled.
@@ -43,8 +43,8 @@ DaemonSet and its operator), so it does not depend on the backend keeping the CN
 
 Chosen by exam weight × current gap, not by domain number.
 
-1. ~~**`01-core-cni/install-and-configure`**~~ — **[built](01-core-cni/install-and-configure/)**, and the
-   unblocker described above.
+1. ~~**`01-core-cni/install-and-configure`**~~ — **built**, as
+   [`cni/install-and-configure`](../cni/install-and-configure/), and the unblocker described above.
 2. **[`01-core-cni/packet-path-with-linux-tools`](01-core-cni/packet-path-with-linux-tools/PLANNED.md)** — every
    troubleshooting objective in the exam rests on being able to follow a packet. Nothing in the repo teaches it.
 3. **[`02-services-and-dns/coredns-customization`](02-services-and-dns/coredns-customization/PLANNED.md)** —
@@ -61,6 +61,7 @@ These serve CKNE domains but belong to topic folders, per the no-duplication pri
 
 | Lab | Domain | Status |
 |---|---|---|
+| [`cni/install-and-configure`](../cni/install-and-configure/) | Core Infrastructure & CNI | Built — the unblocker above |
 | [`netpol/allow-only-and-default-deny`](../netpol/allow-only-and-default-deny/) | Security & Policy | Built |
 | [`netpol/egress-and-the-dns-trap`](../netpol/egress-and-the-dns-trap/) | Security & Policy | Built |
 | `netpol/selectors-that-fail-open` | Security & Policy | Planned — AND vs OR selector semantics, the version that fails *open* |
@@ -77,8 +78,19 @@ These serve CKNE domains but belong to topic folders, per the no-duplication pri
 
 Each unbuilt lab is a directory containing a single `PLANNED.md` design spec. There is deliberately no stub
 `index.json` — Killercoda only picks up directories that have one, so nothing here can be mistaken for, or
-published as, a working lab until it is genuinely finished. A directory with an `index.json` and no
-`PLANNED.md` is a built lab.
+published as, a working lab until it is genuinely finished.
+
+**A finished lab does not stay in this folder.** It moves to a topic folder at the top level, and this map
+links to it — the same rule the rest of the repo follows, and the reason a lab can serve CKA, CKS and CKNE at
+once. There is also a hard constraint behind it: **Killercoda appears to index scenarios exactly two levels
+deep**, `<topic>/<scenario>/index.json`. The domain folders here add a third level, so a built lab left in
+place is never published. Every scenario in every Killercoda repo that could be inspected — the official
+`killercoda/scenario-examples`, `chadmcrowell/killercoda-scenarios` (318 scenarios), `het-tanis/prolug-labs`
+(86) — sits at depth 1 or 2, and none at depth 3.
+
+> That is inference from consistent evidence, not a documented rule: killercoda.com renders client-side, so
+> the creator docs could not be read directly. `archive/learning-linux/linux-files-introduction` is this
+> repo's other depth-3 scenario — if it is also missing from the profile, the rule is confirmed.
 
 When building one, follow the repo standard: `index.json`, `intro.md`, `init/background.sh` + `init/foreground.sh`,
 `stepN/text.md` + `stepN/verify.sh`, `finish.md`. Every claim in the lab text must be reproduced on a live cluster
