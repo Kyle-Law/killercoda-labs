@@ -1,0 +1,39 @@
+{
+  "title": "TLS for Gateway API Listeners",
+  "description": "Terminating TLS at a real Gateway: where the certificate actually lives, SNI choosing between two hostnames on one port, a forced renewal the Gateway never had to be told about, and what Passthrough mode gives up to keep the key off the platform entirely",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "A certificate, a listener, a real handshake",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Two certificates, one port",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Renewal the Gateway never hears about",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "The key the platform never holds",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}

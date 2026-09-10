@@ -17,6 +17,7 @@ where depth doesn't matter because there is no `index.json` to find.
 | [`packet-path-with-linux-tools`](packet-path-with-linux-tools/) | Core Infrastructure & CNI |
 | [`coredns-customization`](coredns-customization/) | Service Networking & DNS |
 | [`httproute-in-depth`](httproute-in-depth/) | Service Networking & DNS |
+| [`gateway-tls`](gateway-tls/) | Network Security & Policy |
 
 ## Domain weights and current coverage
 
@@ -25,7 +26,7 @@ where depth doesn't matter because there is no `index.json` to find.
 | [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 2 of 5 built |
 | [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 5 built |
 | [Advanced Traffic Management](03-traffic-management/) | 20% | None |
-| [Network Security & Policy](04-security-and-policy/) | 25% | Partial — strongest area |
+| [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 1 of 3 specs built, plus the `netpol/` labs below |
 | [Observability](05-observability/) | 15% | Partial |
 
 Domain order is **not** build order. See [Build order](#build-order).
@@ -68,8 +69,14 @@ Chosen by exam weight × current gap, not by domain number.
    object graph: `sectionName` listener attachment, match precedence, measured weighted splitting, and the
    two separate namespace boundaries (`allowedRoutes` vs `ReferenceGrant`) the original design spec conflated
    into one.
-5. **The four `Ready` security labs** — an area with an established, working pattern to copy.
-6. **Defer everything marked `Verify first`** until step 1 has established which features exist.
+5. ~~**`04-security-and-policy/gateway-tls`**~~ — **built** as [`gateway-tls`](gateway-tls/): a self-signed
+   CA via `cert-manager`, SNI serving two certificates off one port, a forced renewal the `Gateway` never had
+   to be told about, and `Passthrough` mode's `supportedKinds` refusing `HTTPRoute` outright rather than
+   merely failing to route it.
+   > Correction to the roadmap's earlier "four `Ready` security labs" claim: only this one was actually marked
+   > `Ready` in its `PLANNED.md`. `pod-identity-and-l7` and `transparent-encryption` are both `Verify first` —
+   > see the coverage table above.
+6. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
 7. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
 
 ## Labs that live outside this folder
