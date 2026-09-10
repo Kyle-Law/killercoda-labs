@@ -14,13 +14,14 @@ where depth doesn't matter because there is no `index.json` to find.
 | Built | Domain |
 |---|---|
 | [`cni-install-and-configure`](cni-install-and-configure/) | Core Infrastructure & CNI |
+| [`packet-path-with-linux-tools`](packet-path-with-linux-tools/) | Core Infrastructure & CNI |
 | [`coredns-customization`](coredns-customization/) | Service Networking & DNS |
 
 ## Domain weights and current coverage
 
 | Domain | Weight | Coverage today |
 |---|---|---|
-| [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — install/configure built |
+| [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 2 of 5 built |
 | [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — CoreDNS built, rest under-weighted |
 | [Advanced Traffic Management](03-traffic-management/) | 20% | None |
 | [Network Security & Policy](04-security-and-policy/) | 25% | Partial — strongest area |
@@ -54,8 +55,10 @@ Chosen by exam weight × current gap, not by domain number.
 
 1. ~~**`01-core-cni/install-and-configure`**~~ — **built** as
    [`cni-install-and-configure`](cni-install-and-configure/), and the unblocker described above.
-2. **[`01-core-cni/packet-path-with-linux-tools`](01-core-cni/packet-path-with-linux-tools/PLANNED.md)** — every
-   troubleshooting objective in the exam rests on being able to follow a packet. Nothing in the repo teaches it.
+2. ~~**`01-core-cni/packet-path-with-linux-tools`**~~ — **built** as
+   [`packet-path-with-linux-tools`](packet-path-with-linux-tools/): find a Pod's veth by kernel `ifindex`
+   (not by name — CNI-agnostic), capture one request raw on it, then capture both ends of a Service-routed
+   connection at once and prove by matching TCP sequence numbers that only the destination is translated.
 3. ~~**`02-services-and-dns/coredns-customization`**~~ — **built** as
    [`coredns-customization`](coredns-customization/): stub domains, rewrites, plugin order, and the broken
    Corefile that takes nothing down until a Pod restarts.
