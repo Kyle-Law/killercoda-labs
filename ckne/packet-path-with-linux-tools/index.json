@@ -1,0 +1,39 @@
+{
+  "title": "Following a Packet with ip, tcpdump and iptables",
+  "description": "A Pod's veth pair, found by ifindex rather than name; one HTTP request captured raw on the host; the DNAT rule that turns a ClusterIP into a Pod address; and conntrack quietly undoing it on the way back",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "Find the veth",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Watch a packet leave",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "The address that isn't real",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "One connection, two ends",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
