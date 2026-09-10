@@ -1,0 +1,39 @@
+{
+  "title": "Installing and Configuring a CNI",
+  "description": "A cluster with no pod network: what the kubelet is actually waiting for, why one JSON file is enough to get Ready, and why that is nowhere near enough to be a cluster network",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "A node with no pod network",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Addresses are not a network",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "The other half of the contract",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Turn on what the rest of the exam needs",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
