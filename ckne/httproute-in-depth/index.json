@@ -1,0 +1,39 @@
+{
+  "title": "Gateway API: Listeners, Matching and Splitting",
+  "description": "Real traffic through a real Gateway API implementation: multi-listener attachment via sectionName, match precedence that has nothing to do with rule order, measured weighted splitting, and the two separate namespace boundaries -- allowedRoutes and ReferenceGrant -- that Ingress never needed",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "One Gateway, two listeners, one route",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Whichever rule is more specific wins",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "80/20 is a target, not a guarantee",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "A route into a namespace that didn't ask for it",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}

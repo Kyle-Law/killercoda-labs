@@ -16,13 +16,14 @@ where depth doesn't matter because there is no `index.json` to find.
 | [`cni-install-and-configure`](cni-install-and-configure/) | Core Infrastructure & CNI |
 | [`packet-path-with-linux-tools`](packet-path-with-linux-tools/) | Core Infrastructure & CNI |
 | [`coredns-customization`](coredns-customization/) | Service Networking & DNS |
+| [`httproute-in-depth`](httproute-in-depth/) | Service Networking & DNS |
 
 ## Domain weights and current coverage
 
 | Domain | Weight | Coverage today |
 |---|---|---|
 | [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 2 of 5 built |
-| [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — CoreDNS built, rest under-weighted |
+| [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 5 built |
 | [Advanced Traffic Management](03-traffic-management/) | 20% | None |
 | [Network Security & Policy](04-security-and-policy/) | 25% | Partial — strongest area |
 | [Observability](05-observability/) | 15% | Partial |
@@ -62,8 +63,11 @@ Chosen by exam weight × current gap, not by domain number.
 3. ~~**`02-services-and-dns/coredns-customization`**~~ — **built** as
    [`coredns-customization`](coredns-customization/): stub domains, rewrites, plugin order, and the broken
    Corefile that takes nothing down until a Pod restarts.
-4. **[`02-services-and-dns/httproute-in-depth`](02-services-and-dns/httproute-in-depth/PLANNED.md)** —
-   `networking/ingress-and-gateway-api` is two steps, far too thin for a 25% domain that names Gateway API directly.
+4. ~~**`02-services-and-dns/httproute-in-depth`**~~ — **built** as
+   [`httproute-in-depth`](httproute-in-depth/), against a real Envoy Gateway controller rather than an inert
+   object graph: `sectionName` listener attachment, match precedence, measured weighted splitting, and the
+   two separate namespace boundaries (`allowedRoutes` vs `ReferenceGrant`) the original design spec conflated
+   into one.
 5. **The four `Ready` security labs** — an area with an established, working pattern to copy.
 6. **Defer everything marked `Verify first`** until step 1 has established which features exist.
 7. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
