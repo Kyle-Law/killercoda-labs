@@ -11,7 +11,7 @@ already served by an existing lab, this map links to it rather than copying it.
 
 | Domain | Weight | Coverage today |
 |---|---|---|
-| [Core Infrastructure & CNI](01-core-cni/) | 15% | None |
+| [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — install/configure built |
 | [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — exists but under-weighted |
 | [Advanced Traffic Management](03-traffic-management/) | 20% | None |
 | [Network Security & Policy](04-security-and-policy/) | 25% | Partial — strongest area |
@@ -19,22 +19,32 @@ already served by an existing lab, this map links to it rather than copying it.
 
 Domain order is **not** build order. See [Build order](#build-order).
 
-## Resolve this first
+## Resolved: don't inherit the backend's CNI, replace it
 
-Roughly a third of these labs depend on which CNI features the Killercoda `kubernetes-kubeadm-*` backend has
-enabled — flow logs, kube-proxy replacement, transparent encryption, egress gateway, L7 policy. A
-`cilium-envoy` Service was observed in a live session, so a policy-enforcing CNI is present, but the feature
-flags are unconfirmed.
+Roughly a third of these labs depend on which CNI features are available — flow logs, kube-proxy replacement,
+transparent encryption, egress gateway, L7 policy. The original plan was to discover what the Killercoda
+`kubernetes-kubeadm-*` backend happens to ship with and work within it.
 
-Rather than spending a session investigating: **installing and configuring a CNI is itself Domain 1 content.**
-[`01-core-cni/install-and-configure`](01-core-cni/install-and-configure/PLANNED.md) satisfies an exam objective
-*and* answers the feasibility question for Domains 3, 4 and 5 in the same lab. Build it first.
+[`01-core-cni/install-and-configure`](01-core-cni/install-and-configure/) makes that question moot. Its
+`init/background.sh` removes whatever CNI the backend arrived with — identifying it generically, by the one
+thing only a CNI does: hostPath-mounting `/etc/cni/net.d` — and the lab then installs Cilium 1.19.7 at a
+pinned version with `kubeProxyReplacement=true` and Hubble enabled.
+
+**Any lab needing a specific CNI feature can reuse that init script rather than hoping.** The removal is
+vendor-agnostic (it resolves the owning Helm release from Helm's own annotations, falling back to deleting the
+DaemonSet and its operator), so it does not depend on the backend keeping the CNI it has today.
+
+> Verified end to end against a kubeadm cluster — `kind` v1.37, containerd, systemd — which is the same shape
+> as the Killercoda backend but not the backend itself. The parts that are environment-sensitive are the CNI
+> removal and the `helm`/`ctr` availability at the top of the init script. Run it once on Killercoda before
+> building anything else on top of it.
 
 ## Build order
 
 Chosen by exam weight × current gap, not by domain number.
 
-1. **[`01-core-cni/install-and-configure`](01-core-cni/install-and-configure/PLANNED.md)** — the unblocker, above.
+1. ~~**`01-core-cni/install-and-configure`**~~ — **[built](01-core-cni/install-and-configure/)**, and the
+   unblocker described above.
 2. **[`01-core-cni/packet-path-with-linux-tools`](01-core-cni/packet-path-with-linux-tools/PLANNED.md)** — every
    troubleshooting objective in the exam rests on being able to follow a packet. Nothing in the repo teaches it.
 3. **[`02-services-and-dns/coredns-customization`](02-services-and-dns/coredns-customization/PLANNED.md)** —
@@ -67,7 +77,8 @@ These serve CKNE domains but belong to topic folders, per the no-duplication pri
 
 Each unbuilt lab is a directory containing a single `PLANNED.md` design spec. There is deliberately no stub
 `index.json` — Killercoda only picks up directories that have one, so nothing here can be mistaken for, or
-published as, a working lab until it is genuinely finished.
+published as, a working lab until it is genuinely finished. A directory with an `index.json` and no
+`PLANNED.md` is a built lab.
 
 When building one, follow the repo standard: `index.json`, `intro.md`, `init/background.sh` + `init/foreground.sh`,
 `stepN/text.md` + `stepN/verify.sh`, `finish.md`. Every claim in the lab text must be reproduced on a live cluster
