@@ -18,12 +18,13 @@ where depth doesn't matter because there is no `index.json` to find.
 | [`coredns-customization`](coredns-customization/) | Service Networking & DNS |
 | [`httproute-in-depth`](httproute-in-depth/) | Service Networking & DNS |
 | [`gateway-tls`](gateway-tls/) | Network Security & Policy |
+| [`packet-fault-triage`](packet-fault-triage/) | Core Infrastructure & CNI |
 
 ## Domain weights and current coverage
 
 | Domain | Weight | Coverage today |
 |---|---|---|
-| [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 2 of 5 built |
+| [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 3 of 5 built |
 | [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 5 built |
 | [Advanced Traffic Management](03-traffic-management/) | 20% | None |
 | [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 1 of 3 specs built, plus the `netpol/` labs below |
@@ -76,8 +77,14 @@ Chosen by exam weight × current gap, not by domain number.
    > Correction to the roadmap's earlier "four `Ready` security labs" claim: only this one was actually marked
    > `Ready` in its `PLANNED.md`. `pod-identity-and-l7` and `transparent-encryption` are both `Verify first` —
    > see the coverage table above.
-6. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
-7. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
+6. ~~**`01-core-cni/pod-connectivity-triage`**~~ — **built** as
+   [`packet-fault-triage`](packet-fault-triage/): four faults that are
+   indistinguishable from the client — a silent `FORWARD` drop, a missing return route, an `nft` rule
+   `iptables -L` cannot see, and a PMTU black hole. Runs in network namespaces on the `ubuntu` backend rather
+   than a cluster, deliberately: no CNI or kube-proxy to hide behind. Its spec's open question — whether faults
+   could be injected reproducibly without wedging the node — is answered by never touching the host's stack.
+7. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
+8. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
 
 ## Labs that live outside this folder
 
