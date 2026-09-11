@@ -1,0 +1,44 @@
+{
+  "title": "Diagnosing Packet-Level Faults with ip, tcpdump and iptables",
+  "description": "Four failures that look alike from the client and are nothing alike underneath: a silent FORWARD drop, a missing return route, a firewall rule iptables cannot see, and a PMTU black hole that only breaks large responses",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "Hang or refuse: the first branch",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "One-ended captures lie",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "The rule iptables cannot see",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "Only the big ones fail",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    },
+    "assets": {
+      "host01": [
+        {"file": "netlab.sh", "target": "/usr/local/bin", "chmod": "+x"}
+      ]
+    }
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}
