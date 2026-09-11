@@ -93,4 +93,33 @@ exit 1
 WRAP
 chmod +x /usr/local/bin/podveth
 
+# Where a Service's translation actually lives depends on the datapath this
+# cluster runs, and the two put it in completely different places. This dumps
+# both sources so you can see which one is populated -- it does not tell you
+# what that means for a packet capture, which is the point of step 3.
+cat > /usr/local/bin/svctable <<'WRAP'
+#!/bin/bash
+SVC=${1:-web}
+NS=${2:-default}
+CLUSTER_IP=$(kubectl -n "$NS" get svc "$SVC" -o jsonpath='{.spec.clusterIP}' 2>/dev/null)
+echo "Service $NS/$SVC has ClusterIP $CLUSTER_IP"
+echo
+echo "=== kube-proxy's iptables rules (nat table) ==="
+if iptables-save -t nat 2>/dev/null | grep -q "$NS/$SVC"; then
+  iptables-save -t nat | grep "$NS/$SVC"
+else
+  echo "  (none -- nothing in the nat table mentions $NS/$SVC)"
+fi
+echo
+echo "=== Cilium's eBPF service map ==="
+if kubectl -n kube-system get ds cilium >/dev/null 2>&1; then
+  kubectl -n kube-system exec ds/cilium -c cilium-agent -- \
+    cilium-dbg service list 2>/dev/null | grep -E "Frontend|${CLUSTER_IP}" \
+    || echo "  (cilium present but no entry found)"
+else
+  echo "  (no Cilium DaemonSet on this cluster)"
+fi
+WRAP
+chmod +x /usr/local/bin/svctable
+
 touch /tmp/.initfinished

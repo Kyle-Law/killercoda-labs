@@ -52,6 +52,21 @@ DaemonSet and its operator), so it does not depend on the backend keeping the CN
 > removal and the `helm`/`ctr` availability at the top of the init script. Run it once on Killercoda before
 > building anything else on top of it.
 
+## Confirmed: the backend runs Cilium with kube-proxy replacement
+
+Established by running `packet-path-with-linux-tools` on the real `kubernetes-kubeadm-1node` backend. There is
+**no `kube-proxy` DaemonSet and no `KUBE-` iptables chains at all** — `cilium`, `cilium-envoy` and
+`cilium-operator` only, with `Socket LB: Enabled`.
+
+The practical consequence, and it bites: **Service translation happens inside the `connect()` syscall, before a
+packet exists.** A `tcpdump` on the client's veth shows the backend Pod IP and target port from the first SYN;
+the ClusterIP never appears on the wire, and `iptables-save -t nat` is empty. Any lab that assumes the
+kube-proxy datapath — a ClusterIP visible in a capture, a `DNAT` rule to find, a translation to observe
+in flight — is wrong here and will fail its own verification.
+
+Labs touching Services must either handle both datapaths or state which one they require. The service map is
+readable with `cilium-dbg service list`, which holds exactly the mapping the iptables chain would have.
+
 ## Build order
 
 Chosen by exam weight × current gap, not by domain number.
