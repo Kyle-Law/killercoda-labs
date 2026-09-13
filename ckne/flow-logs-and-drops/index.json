@@ -1,0 +1,39 @@
+{
+  "title": "Auditing Traffic with Flow Logs",
+  "description": "Hubble turns NetworkPolicy from guesswork into observation: see every flow with the identity at each end, find a drop and the reason for it, discover a workload nobody authorised, and derive an allow-list from traffic that actually happened",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "Identity, not IP address",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "A drop, and the reason for it",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "What is talking to this?",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "An allow-list derived from real traffic",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
