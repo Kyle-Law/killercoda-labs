@@ -1,0 +1,39 @@
+{
+  "title": "Routing Inference Traffic",
+  "description": "Why LLM traffic breaks ordinary load balancing: a proxy timeout that truncates a streaming answer with no error, a balancer that sends work to a drowning replica while another sits idle, least-request failing to fix it, and the model name living somewhere Gateway API cannot match on",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "The answer that stops halfway",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "A balancer that cannot see load",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "The model name is in the wrong place",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "The metric the autoscaler needs",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
