@@ -21,6 +21,7 @@ where depth doesn't matter because there is no `index.json` to find.
 | [`packet-fault-triage`](packet-fault-triage/) | Core Infrastructure & CNI |
 | [`llm-routing`](llm-routing/) | Advanced Traffic Management |
 | [`flow-logs-and-drops`](flow-logs-and-drops/) | Observability |
+| [`pod-identity-and-l7`](pod-identity-and-l7/) | Network Security & Policy |
 
 ## Domain weights and current coverage
 
@@ -29,7 +30,7 @@ where depth doesn't matter because there is no `index.json` to find.
 | [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 3 of 5 built |
 | [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 4 built |
 | [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 1 of 4 built |
-| [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 1 of 3 specs built, plus the `netpol/` labs below |
+| [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 2 of 3 specs built, plus the `netpol/` labs below |
 | [Observability](05-observability/) | 15% | Partial — 1 of 3 built |
 
 Domain order is **not** build order. See [Build order](#build-order).
@@ -78,8 +79,7 @@ readable with `cilium-dbg service list`, which holds exactly the mapping the ipt
 - **L7 policy is enforced.** `cilium-envoy` runs as its own DaemonSet, and `CiliumNetworkPolicy` with
   `toPorts.rules.http` genuinely discriminates by method and path on one port — `GET /hostname` → 200,
   `GET /` → 403, `POST /hostname` → 403. This unblocks
-  [`04-security-and-policy/pod-identity-and-l7`](04-security-and-policy/pod-identity-and-l7/PLANNED.md),
-  now marked `Ready`.
+  [`pod-identity-and-l7`](pod-identity-and-l7/), now built.
 
 ## Build order
 
@@ -122,8 +122,13 @@ Chosen by exam weight × current gap, not by domain number.
    addresses, a default-deny whose verdict is `policy-verdict:none` because *no rule fired*, a `scanner`
    nobody authorised discovered from the flow log, and an allow-list derived from traffic that actually
    happened.
-9. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
-10. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
+9. ~~**`04-security-and-policy/pod-identity-and-l7`**~~ — **built** as
+   [`pod-identity-and-l7`](pod-identity-and-l7/): what native NetworkPolicy structurally cannot say, the
+   `403`-versus-`000` distinction that reveals which layer refused, the Envoy redirect that enforces it and
+   what it costs, and two silent traps — a broad L4 allow unioning away a narrow L7 rule, and an `ipBlock`
+   naming the correct Pod IP that matches nothing at all.
+10. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
+11. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
 
 ## Labs that live outside this folder
 

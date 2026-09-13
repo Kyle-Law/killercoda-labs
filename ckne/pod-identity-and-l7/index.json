@@ -1,0 +1,39 @@
+{
+  "title": "Identity-Based and L7 Authorization",
+  "description": "What native NetworkPolicy structurally cannot say: allow GET /hostname and refuse POST on the same port between the same two Pods. Plus the proxy that enforces it, what it costs, and why an ipBlock rule naming the right Pod IP silently matches nothing",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "One port, one verdict",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "A rule about methods and paths",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Where the decision is made, and what it costs",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "The IP-based rule that matches nothing",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
