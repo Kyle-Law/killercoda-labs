@@ -11,6 +11,8 @@ Look at the latency spread it reports, then work out **which replica is actually
 
 Then try the obvious fix — switching the load balancer to least-request — and report honestly whether it helped.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

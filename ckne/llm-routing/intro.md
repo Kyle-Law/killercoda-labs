@@ -17,4 +17,6 @@ Three model servers are running:
 
 `chat-fast` and `chat-slow` sit behind one Service, `chat`. A real fleet ends up uneven exactly like this — different GPU types, a node under memory pressure, one replica still warming its KV cache.
 
+Each step is checked with the **CHECK** button. When a check does not pass, run `why`{{exec}} in the terminal — every check in this lab writes down which condition it was not happy with, rather than leaving you to guess.
+
 Every step here builds a task, not a solution — work it out yourself first, use the **Tip** if you're stuck, and check the **Solution** only once you've tried.

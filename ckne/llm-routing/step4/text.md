@@ -3,6 +3,8 @@ You now know `chat-slow` drowns under load while `chat-fast` sits idle. The obvi
 
 So decide what "busy" means. Put load on again, watch `llmstats`, and write the metric an HPA should scale this workload on — plus the observation that rules out the usual one — to `/root/answers/step4.txt`.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

@@ -133,6 +133,22 @@ kubectl wait --for=condition=Ready pod/cli --timeout=300s >/dev/null 2>&1
 # Helpers
 # ---------------------------------------------------------------------------
 
+# Steps 2 and 4 ask the learner to write a finding here. Without this the
+# redirection fails and the step is unpassable.
+mkdir -p /root/answers
+
+# Killercoda shows only pass/fail, never a verify script's output, so each
+# check writes its reason here and `why` prints it.
+cat > /usr/local/bin/why <<'WRAP'
+#!/bin/bash
+if [ -s /root/.check ]; then
+  cat /root/.check
+else
+  echo "No check has run yet -- press CHECK, then run 'why' again."
+fi
+WRAP
+chmod +x /usr/local/bin/why
+
 # The Gateway's address. Envoy Gateway names the Service after the Gateway with
 # a hash suffix, so look it up by label rather than hardcoding a name.
 cat > /usr/local/bin/gwaddr <<'WRAP'
