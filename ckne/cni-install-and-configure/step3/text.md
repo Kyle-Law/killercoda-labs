@@ -7,6 +7,8 @@ Look at `/etc/cni/net.d` and `/opt/cni/bin` and answer:
 - Cilium's conflist is a third the size of yours and contains no IPAM section at all. Where did the addressing go?
 - Both halves of the contract are on that node. Break the half you haven't broken yet, and predict the symptom before you look — it is not the one from step 1.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

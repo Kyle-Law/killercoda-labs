@@ -9,6 +9,8 @@ Now answer the question you would actually need answered before locking down a r
 
 Then look at the list and decide whether anything on it should not be there. Write that workload's name to `/root/answers/step3.txt`.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

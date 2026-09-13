@@ -3,6 +3,8 @@ Read the Corefile this cluster is running. For each of `kubernetes`, `forward` a
 
 Turn on query logging, make two lookups that are handled by two different plugins, and find the field in the log line that distinguishes them.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

@@ -6,6 +6,8 @@
 
 Write the exact rule down, but before you apply it: **predict** which backend answers a `GET /hostname`. Both rules match that request — the general one and the specific one.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

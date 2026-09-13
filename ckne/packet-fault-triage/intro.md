@@ -26,3 +26,5 @@ netlab reveal        give up and see the answer, plus how you should have found 
 ```
 
 A fault is already injected. Try to diagnose each one yourself before reaching for `netlab reveal` — it is the answer key, not a hint.
+
+Each step is checked with the **CHECK** button. When a check does not pass, run `why`{{exec}} in the terminal — every check in this lab writes down which condition it was not happy with, rather than leaving you to guess.

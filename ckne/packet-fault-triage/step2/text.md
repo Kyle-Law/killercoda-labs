@@ -5,6 +5,8 @@ Check the router's firewall first. You will find nothing. Every table is empty.
 
 Find the real cause, write the command that proves it to `/root/answers/step2.txt`, and repair it.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

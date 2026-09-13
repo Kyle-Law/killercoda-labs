@@ -234,6 +234,18 @@ kubectl rollout status deployment/tls-backend --timeout=180s >/dev/null 2>&1
 # Helpers
 # ---------------------------------------------------------------------------
 
+# Killercoda shows only pass/fail, never a verify script's output, so each
+# check writes its reason to /root/.check and `why` prints it.
+cat > /usr/local/bin/why <<'WRAP'
+#!/bin/bash
+if [ -s /root/.check ]; then
+  cat /root/.check
+else
+  echo "No check has run yet -- press CHECK, then run 'why' again."
+fi
+WRAP
+chmod +x /usr/local/bin/why
+
 # The Envoy Service fronting whichever Gateway this lab is using.
 cat > /usr/local/bin/gwaddr <<'WRAP'
 #!/bin/bash

@@ -3,6 +3,8 @@
 
 Write its name to `/root/veth-web.txt`.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

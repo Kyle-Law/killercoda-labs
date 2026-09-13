@@ -3,6 +3,8 @@
 
 There is a resolver in this cluster that *does* know the zone. Find it, confirm it has the answer, and then make cluster DNS use it — for that zone only, without changing what happens to anything else.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

@@ -10,3 +10,5 @@ It also has two properties worth knowing before you touch it in production. The 
 Three things are running: `web` with a Service, a `dnstools` Pod to ask questions from, and — in the `corp-dns` namespace — a completely separate DNS server that is authoritative for `corp.internal` and knows nothing about this cluster. Treat it as the resolver another team runs.
 
 Every step here builds a task, not a solution — work it out yourself first, use the **Tip** if you're stuck, and check the **Solution** only once you've tried.
+
+Each step is checked with the **CHECK** button. When a check does not pass, run `why`{{exec}} in the terminal — every check in this lab writes down which condition it was not happy with, rather than leaving you to guess.

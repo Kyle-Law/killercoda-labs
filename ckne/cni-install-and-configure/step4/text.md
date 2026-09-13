@@ -3,6 +3,8 @@ A default CNI install is the floor, not the goal. Two features the rest of the C
 
 Turn both on. Then prove each is genuinely doing the work rather than merely being configured — for the datapath in particular, "the Service still resolves" proves nothing on its own, and you should be able to say why.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

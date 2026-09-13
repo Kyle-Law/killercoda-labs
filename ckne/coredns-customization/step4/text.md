@@ -5,6 +5,8 @@ Introduce a typo — misspell `forward` as `forwardd` — and apply it. Predict 
 
 Then work out why the answer is more dangerous than "yes" would have been, and prove it. Leave the cluster healthy at the end.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

@@ -3,6 +3,8 @@ Every policy so far selected `web` by its **labels**. Try selecting it by its **
 
 Recreate the L4 policy as `api-l4`, but with an `ipBlock` naming `web`'s current Pod IP in place of the `podSelector`. Predict the result before you test it.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

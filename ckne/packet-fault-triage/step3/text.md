@@ -5,6 +5,8 @@ But `iptables -L -n -v` is clean. So is `-t nat`. So is `-t mangle`, and `-t raw
 
 The rule exists. Find it, write the table it lives in to `/root/answers/step3.txt`, and remove it.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

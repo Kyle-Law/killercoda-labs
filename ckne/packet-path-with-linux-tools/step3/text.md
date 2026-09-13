@@ -5,6 +5,8 @@ Look at the destination address in the capture, and answer the question it raise
 
 Your answer tells you which datapath this cluster runs. Then find where that datapath actually keeps the translation, and save the proof to `/root/svc-translation.txt`.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

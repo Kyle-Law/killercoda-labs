@@ -5,6 +5,8 @@ Create a `Gateway` named `web-gateway` using that class, with **two** listeners:
 
 Then attach an `HTTPRoute` named `web-route` for hostname `web.example.com`, routing to `web` — but only to the **public** listener. Confirm it works on port 80, and confirm it does **not** work on port 8080, on the same Gateway, for the same hostname.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

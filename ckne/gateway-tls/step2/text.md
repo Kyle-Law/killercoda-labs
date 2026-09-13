@@ -3,6 +3,8 @@ One listener, one port, one certificate — that's `secure.example.com` handled.
 
 Predict first: can one `HTTPS` listener on port 443 serve two different certificates, or does this need a second listener on a different port?
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

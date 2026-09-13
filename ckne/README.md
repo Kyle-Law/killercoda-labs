@@ -169,5 +169,32 @@ When building one, follow the repo standard: `index.json`, `intro.md`, `init/bac
 before it is written down, and any lab asserting traffic is *blocked* must fail loudly on a non-enforcing CNI
 rather than passing vacuously.
 
+**Every check must say what it wanted.** Killercoda decides pass/fail from the verify script's exit code alone and
+never shows the learner its output, so a bare `exit 1` is silent by construction — a red cross and nothing else.
+Each `verify.sh` therefore writes its reason to `/root/.check`, and every lab's init installs a `why` helper that
+prints it:
+
+```bash
+LOG=/root/.check
+STEP="Step 1 · ..."
+: > "$LOG"
+fail() { { echo "x $STEP"; echo; printf '%s\n' "$@"; } | tee "$LOG"; exit 1; }
+pass() { echo "OK $STEP -- passed." | tee "$LOG"; exit 0; }
+```
+
+Name the condition that was not met, include the live state behind it (what the field actually says, what came
+back on the wire), and give the command that shows it. State the criterion without handing over the answer the
+step is asking for. Where a check waits in a retry loop, record which condition it is still waiting on and report
+that one when the attempts run out. Each step's text carries a line pointing at `why`.
+
+**`mkdir -p /root/answers` in the init if any step writes a finding there.** Two labs shipped without it, and both
+were unpassable at those steps: the learner's redirect failed with `No such file or directory` and the check said
+nothing.
+
+> **The Gateway never reaches `Programmed=True` on this backend.** There is no load-balancer controller, so the
+> Envoy data-plane Service gets no external address — `AddressNotAssigned` — while serving perfectly on its
+> ClusterIP. Gate on `Accepted` and on the Service's ClusterIP existing; a `Programmed` gate makes the step
+> impossible to pass.
+
 > Planned from a supplied domain outline, not the published CNCF curriculum. Reconcile the objectives and
 > weightings against the official document before treating this as authoritative.

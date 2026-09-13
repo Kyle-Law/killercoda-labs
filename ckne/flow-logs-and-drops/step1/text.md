@@ -9,6 +9,8 @@ Every flow names both ends — and next to each name is a number in brackets. Wo
 
 Write `api`'s number to `/root/answers/step1.txt`.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

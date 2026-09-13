@@ -3,6 +3,8 @@ Everything so far has been `mode: Terminate` — Envoy decrypts, reads the HTTP 
 
 `HTTPRoute` doesn't attach to a `Passthrough` listener. Find out what does, and why `HTTPRoute` specifically can't.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

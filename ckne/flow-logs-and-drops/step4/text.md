@@ -3,6 +3,8 @@ You know what talks to `api`, and which of those callers is legitimate. Write th
 
 Then prove it, using the flow log rather than trusting it: `web` still gets through, `scanner` is refused.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>
