@@ -12,6 +12,8 @@ kubectl exec cli -- curl -s -m 30 -X POST "http://$GW/v1/chat/completions" \
 
 Make that request reach the right backend. Then answer the harder question: **why can't Gateway API route on the model name directly?**
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

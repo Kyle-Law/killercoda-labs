@@ -5,6 +5,8 @@ Then stream one long completion through it and watch what you get back.
 
 The response will not arrive intact. Work out what cut it off, and fix it so the whole answer streams through.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>
