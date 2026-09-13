@@ -19,14 +19,15 @@ where depth doesn't matter because there is no `index.json` to find.
 | [`httproute-in-depth`](httproute-in-depth/) | Service Networking & DNS |
 | [`gateway-tls`](gateway-tls/) | Network Security & Policy |
 | [`packet-fault-triage`](packet-fault-triage/) | Core Infrastructure & CNI |
+| [`llm-routing`](llm-routing/) | Advanced Traffic Management |
 
 ## Domain weights and current coverage
 
 | Domain | Weight | Coverage today |
 |---|---|---|
 | [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 3 of 5 built |
-| [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 5 built |
-| [Advanced Traffic Management](03-traffic-management/) | 20% | None |
+| [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 4 built |
+| [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 1 of 4 built |
 | [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 1 of 3 specs built, plus the `netpol/` labs below |
 | [Observability](05-observability/) | 15% | Partial |
 
@@ -98,8 +99,13 @@ Chosen by exam weight × current gap, not by domain number.
    `iptables -L` cannot see, and a PMTU black hole. Runs in network namespaces on the `ubuntu` backend rather
    than a cluster, deliberately: no CNI or kube-proxy to hide behind. Its spec's open question — whether faults
    could be injected reproducibly without wedging the node — is answered by never touching the host's stack.
-7. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
-8. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
+7. ~~**`03-traffic-management/llm-routing`**~~ — **built** as [`llm-routing`](llm-routing/), opening the
+   20%-weight domain that had no coverage at all: a streaming answer truncated by Envoy's 15s default while
+   still logging `200`, round-robin sending work to a replica with a ten-deep queue while another sits idle,
+   **least-request failing to fix it** (it counts what the proxy dispatched, not what the model server queued),
+   and the model name living in the JSON body where `HTTPRoute` structurally cannot match on it.
+8. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
+9. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
 
 ## Labs that live outside this folder
 
@@ -117,7 +123,7 @@ These serve CKNE domains but belong to topic folders, per the no-duplication pri
 | [`troubleshooting/services-dns`](../troubleshooting/services-dns/) | Services & DNS | Built — failures only, not configuration |
 | [`probes/restart-remove-or-wait`](../probes/restart-remove-or-wait/) | Services & DNS | Built — readiness → EndpointSlice |
 | [`observability/prometheus-operator`](../observability/prometheus-operator/) | Observability | Built |
-| [`ai-workloads/inference-sim`](../ai-workloads/inference-sim/) | Traffic Management | Built — reused by `03-traffic-management/llm-routing` |
+| [`ai-workloads/inference-sim`](../ai-workloads/inference-sim/) | Traffic Management | Built — its simulator is reused by [`llm-routing`](llm-routing/) |
 
 ## Conventions
 
