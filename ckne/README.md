@@ -20,6 +20,7 @@ where depth doesn't matter because there is no `index.json` to find.
 | [`gateway-tls`](gateway-tls/) | Network Security & Policy |
 | [`packet-fault-triage`](packet-fault-triage/) | Core Infrastructure & CNI |
 | [`llm-routing`](llm-routing/) | Advanced Traffic Management |
+| [`flow-logs-and-drops`](flow-logs-and-drops/) | Observability |
 
 ## Domain weights and current coverage
 
@@ -29,7 +30,7 @@ where depth doesn't matter because there is no `index.json` to find.
 | [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 4 built |
 | [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 1 of 4 built |
 | [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 1 of 3 specs built, plus the `netpol/` labs below |
-| [Observability](05-observability/) | 15% | Partial |
+| [Observability](05-observability/) | 15% | Partial — 1 of 3 built |
 
 Domain order is **not** build order. See [Build order](#build-order).
 
@@ -68,6 +69,18 @@ in flight — is wrong here and will fail its own verification.
 Labs touching Services must either handle both datapaths or state which one they require. The service map is
 readable with `cilium-dbg service list`, which holds exactly the mapping the iptables chain would have.
 
+**Two capabilities confirmed available, against a cluster reproducing that exact configuration:**
+
+- **Hubble flow logs need nothing installed.** Hubble is enabled *in the agent* by default
+  (`Hubble: Ok ... Flows/s: 6.95`), and `hubble observe` works inside the `cilium` Pod.
+  `hubble-relay` is absent from the backend and is not required — relay only aggregates across nodes,
+  and there is one node. This is what [`flow-logs-and-drops`](flow-logs-and-drops/) runs on.
+- **L7 policy is enforced.** `cilium-envoy` runs as its own DaemonSet, and `CiliumNetworkPolicy` with
+  `toPorts.rules.http` genuinely discriminates by method and path on one port — `GET /hostname` → 200,
+  `GET /` → 403, `POST /hostname` → 403. This unblocks
+  [`04-security-and-policy/pod-identity-and-l7`](04-security-and-policy/pod-identity-and-l7/PLANNED.md),
+  now marked `Ready`.
+
 ## Build order
 
 Chosen by exam weight × current gap, not by domain number.
@@ -104,8 +117,13 @@ Chosen by exam weight × current gap, not by domain number.
    still logging `200`, round-robin sending work to a replica with a ten-deep queue while another sits idle,
    **least-request failing to fix it** (it counts what the proxy dispatched, not what the model server queued),
    and the model name living in the JSON body where `HTTPRoute` structurally cannot match on it.
-8. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
-9. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
+8. ~~**`05-observability/flow-logs-and-drops`**~~ — **built** as
+   [`flow-logs-and-drops`](flow-logs-and-drops/), opening Observability: security identities rather than
+   addresses, a default-deny whose verdict is `policy-verdict:none` because *no rule fired*, a `scanner`
+   nobody authorised discovered from the flow log, and an allow-list derived from traffic that actually
+   happened.
+9. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
+10. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
 
 ## Labs that live outside this folder
 

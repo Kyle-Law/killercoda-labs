@@ -7,7 +7,7 @@
 | **CKNE domain** | Network Security & Policy (25%) |
 | **Exam objective** | Implementing Pod-level Authentication and Authorization |
 | **Proposed backend** | `kubernetes-kubeadm-1node` |
-| **Feasibility** | Verify first |
+| **Feasibility** | **Ready** — L7 enforcement confirmed on the backend's CNI |
 
 ## What it teaches
 
@@ -20,9 +20,20 @@ Authorization by workload identity rather than IP address, and rules native Netw
 3. Observe the enforcement point — a proxy in the datapath, and what that costs.
 4. Identity versus IP: why a rule bound to a workload survives a rescheduled Pod and an IP-based one does not.
 
-## Must resolve before building
+## Resolved
 
-- Whether the backend's CNI has L7 policy enforcement available (an Envoy component was observed, which is promising but unconfirmed).
+L7 policy **works**, verified against a cluster reproducing the backend's exact Cilium configuration
+(`kubeProxyReplacement=true`, `cilium-envoy` as its own DaemonSet, no `hubble-relay`):
+
+- `CiliumNetworkPolicy` `cilium.io/v2` is present, and `toPorts.rules.http` is enforced.
+- With a rule allowing only `GET /hostname`: `GET /hostname` → **200**, `GET /` → **403**,
+  `POST /hostname` → **403**. Same port, same two Pods, different verdict per method and path —
+  exactly what the objective asks for and what native NetworkPolicy cannot express.
+- The refusal is a **403, not a timeout**: the proxy terminates the request and answers. That is the
+  distinguishing signature of L7 enforcement versus an L3/L4 drop, which yields `000`/no response.
+- `hubble observe --protocol http` attributes it precisely:
+  `http-request DROPPED (HTTP/1.1 POST http://api/hostname)` followed by the proxy's own
+  `http-response FORWARDED (HTTP/1.1 403)`.
 
 ## Cross-links
 
