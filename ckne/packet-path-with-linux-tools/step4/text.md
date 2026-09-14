@@ -5,6 +5,8 @@ Save `client`'s side to `/root/cap-client-side.txt` and `web`'s side to `/root/c
 
 Before you look: given what you found in step 3, **predict whether the two captures will differ at all.**
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

@@ -3,6 +3,8 @@
 
 Get a certificate for `secure.example.com`, then reference it from an HTTPS `Gateway` listener on port 443 and route `web` behind it. Don't take the listener's word for it — confirm with a real TLS handshake that the certificate actually served is the one you asked for.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

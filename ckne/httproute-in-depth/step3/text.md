@@ -3,6 +3,8 @@ Route 80% of `web.example.com` traffic to `web`, and 20% to `web-canary` — a s
 
 Then don't trust the number. Send 200 requests and count where they actually landed.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

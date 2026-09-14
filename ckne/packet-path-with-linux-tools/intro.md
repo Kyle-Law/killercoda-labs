@@ -8,3 +8,5 @@ This lab never asks `kubectl` where a packet went. It finds a Pod's interface on
 Two things are running: `web`, with a Service in front of it, and `client`, a Pod to make requests from. Every technique here works identically on a cluster ten times this size, because none of it depends on the CNI, the number of nodes, or anything Kubernetes-specific at all — only on there being a Linux network namespace involved, which there always is.
 
 Every step here builds a task, not a solution — work it out yourself first, use the **Tip** if you're stuck, and check the **Solution** only once you've tried.
+
+Each step is checked with the **CHECK** button. When a check does not pass, run `why`{{exec}} in the terminal — every check in this lab writes down which condition it was not happy with, rather than leaving you to guess.

@@ -3,6 +3,8 @@
 
 Note the certificate's serial number, force a reissue, and confirm two things: the Secret really did get new contents, and the `Gateway` is serving them **without you touching the `Gateway` at all**.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

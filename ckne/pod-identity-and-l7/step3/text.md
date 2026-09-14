@@ -1,6 +1,8 @@
 
 Something in the path parsed that HTTP request and returned a `403`. Find it, and measure what it costs.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

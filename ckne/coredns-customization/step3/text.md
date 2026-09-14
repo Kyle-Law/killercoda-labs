@@ -5,6 +5,8 @@ Make `legacy-api.example.com` resolve to `web` — without adding a Service, tou
 
 Then settle an argument. Put the new plugin **last in the block, after `forward`**, and predict whether it will work before you apply it.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

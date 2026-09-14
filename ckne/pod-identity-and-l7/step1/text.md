@@ -3,6 +3,8 @@ Write a native `NetworkPolicy` named `api-l4` that lets `web` reach `api` on por
 
 Then establish its limit precisely: find a request you would want to refuse that this policy cannot refuse.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

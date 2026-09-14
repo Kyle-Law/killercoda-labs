@@ -5,6 +5,8 @@ Apply a NetworkPolicy that denies **all** ingress to `web`, then send it a reque
 
 Then install a real CNI, get the existing Pods onto it, and confirm the same policy — unchanged, never re-applied — starts doing something.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

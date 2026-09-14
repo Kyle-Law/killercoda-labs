@@ -89,6 +89,22 @@ kubectl wait --for=condition=Ready pod/cli --timeout=240s >/dev/null 2>&1
 # Helpers
 # ---------------------------------------------------------------------------
 
+# The steps ask the learner to write findings here. Without this the
+# redirection fails and the step cannot be passed.
+mkdir -p /root/answers
+
+# Killercoda shows only pass/fail, never a verify script's output, so each
+# check writes its reason to /root/.check and `why` prints it.
+cat > /usr/local/bin/why <<'WRAP'
+#!/bin/bash
+if [ -s /root/.check ]; then
+  cat /root/.check
+else
+  echo "No check has run yet -- press CHECK, then run 'why' again."
+fi
+WRAP
+chmod +x /usr/local/bin/why
+
 # hubble lives inside the Cilium agent. Relay is only needed to aggregate
 # across nodes -- on one node the agent's own buffer has everything, which is
 # why this lab needs nothing installed.

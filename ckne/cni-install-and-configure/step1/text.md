@@ -7,6 +7,8 @@ Nothing in this cluster will start. Find out what the kubelet is actually compla
 
 Then get the node to `Ready` **without installing any CNI software at all** — no Helm chart, no DaemonSet, no `kubectl apply` of anybody's manifest. Everything you need is already on disk.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

@@ -5,6 +5,8 @@ Use a `CiliumNetworkPolicy` named `api-l7`. Apply it **alongside** the `api-l4` 
 
 It will not do what you expect. Work out why, and make it take effect.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

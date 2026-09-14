@@ -64,6 +64,18 @@ kubectl wait --for=condition=Ready pod/client --timeout=180s >/dev/null 2>&1
 # Helpers
 # ---------------------------------------------------------------------------
 
+# Killercoda shows only pass/fail, never a verify script's output, so each
+# check writes its reason to /root/.check and `why` prints it.
+cat > /usr/local/bin/why <<'WRAP'
+#!/bin/bash
+if [ -s /root/.check ]; then
+  cat /root/.check
+else
+  echo "No check has run yet -- press CHECK, then run 'why' again."
+fi
+WRAP
+chmod +x /usr/local/bin/why
+
 # The host-side interface index a veth reports for itself has nothing to do
 # with which network namespace it was created in -- kernels hand out ifindex
 # numbers from one global counter. Inside a Pod's netns, eth0's *iflink* (its

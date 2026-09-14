@@ -13,6 +13,8 @@ Reproduce the failure, then answer two questions **before** you touch a capture:
 
 Then find the rule responsible, write the chain it lives in to `/root/answers/step1.txt`, and remove it so the probe passes again.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>

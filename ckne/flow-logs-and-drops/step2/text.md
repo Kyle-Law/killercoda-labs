@@ -3,6 +3,8 @@ Lock `api` down with a default-deny ingress policy, then use the flow log to ans
 
 Write the exact verdict string Hubble reports for the blocked flows to `/root/answers/step2.txt`.
 
+> **If CHECK does not pass**, run `why`{{exec}} — it prints the exact condition that was not met, and usually the command that shows you why.
+
 <br>
 
 <details><summary>Tip</summary>
