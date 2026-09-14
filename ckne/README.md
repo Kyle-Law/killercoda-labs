@@ -28,7 +28,7 @@ where depth doesn't matter because there is no `index.json` to find.
 | Domain | Weight | Coverage today |
 |---|---|---|
 | [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 3 of 5 built |
-| [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 4 built |
+| [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 6 built |
 | [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 1 of 4 built |
 | [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 2 of 3 specs built, plus the `netpol/` labs below |
 | [Observability](05-observability/) | 15% | Partial — 1 of 3 built |
