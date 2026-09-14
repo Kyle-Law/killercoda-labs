@@ -13,7 +13,7 @@ ANSWER=/root/answers/step1.txt
   "No answer file at $ANSWER." \
   "" \
   "Write the number in brackets next to api in the flow log:" \
-  "  echo <number> > $ANSWER"
+  "  echo '<number>' > $ANSWER"
 
 CLAIM=$(tr -dc '0-9' < "$ANSWER")
 [ -n "$CLAIM" ] || fail \
