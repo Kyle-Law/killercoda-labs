@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Observability (15%) |
 | **Exam objective** | Analyzing Network Health Using Metrics |
+| **Mapped tech** | Prometheus + Hubble (Cilium metrics) |
 | **Proposed backend** | `kubernetes-kubeadm-2nodes` |
 | **Feasibility** | Ready |
 

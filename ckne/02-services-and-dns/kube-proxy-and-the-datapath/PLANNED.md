@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Service Networking & DNS (25%) |
 | **Exam objective** | Understanding kube-proxy and CNI Alternatives |
+| **Mapped tech** | Cilium (the CNI alternative) |
 | **Proposed backend** | `kubernetes-kubeadm-1node` |
 | **Feasibility** | Verify first |
 

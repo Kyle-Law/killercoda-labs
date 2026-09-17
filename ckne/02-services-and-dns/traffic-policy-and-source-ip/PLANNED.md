@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Service Networking & DNS (25%) |
 | **Exam objective** | Troubleshooting Service Network Traffic |
+| **Mapped tech** | Hubble + Cilium |
 | **Proposed backend** | `kubernetes-kubeadm-2nodes` |
 | **Feasibility** | Ready |
 

@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Advanced Traffic Management (20%) |
 | **Exam objective** | Implementing Advanced Load Balancing for Inference Workloads |
+| **Mapped tech** | Gateway API (Inference Extension) + Envoy |
 | **Proposed backend** | `kubernetes-kubeadm-1node` |
 | **Feasibility** | **Ready — verified on a live cluster.** See the spike results below. |
 

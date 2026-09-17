@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Core Infrastructure & CNI (15%) |
 | **Exam objective** | Managing IPAM and Pod CIDR Allocation |
+| **Mapped tech** | Cilium (IPAM modes) |
 | **Proposed backend** | `kubernetes-kubeadm-2nodes` |
 | **Feasibility** | Ready |
 

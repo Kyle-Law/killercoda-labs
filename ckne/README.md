@@ -27,11 +27,11 @@ where depth doesn't matter because there is no `index.json` to find.
 
 | Domain | Weight | Coverage today |
 |---|---|---|
-| [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 3 of 5 built |
-| [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 7 built |
-| [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 1 of 5 built |
-| [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 2 of 3 specs built, plus the `netpol/` labs below |
-| [Observability](05-observability/) | 15% | Partial — 1 of 3 built |
+| [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 3 of 6 built |
+| [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 10 built |
+| [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 1 of 6 built |
+| [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 2 of 5 built, plus the `netpol/` labs below |
+| [Observability](05-observability/) | 15% | Partial — 1 of 4 built |
 
 Domain order is **not** build order. See [Build order](#build-order).
 
@@ -80,6 +80,31 @@ readable with `cilium-dbg service list`, which holds exactly the mapping the ipt
   `toPorts.rules.http` genuinely discriminates by method and path on one port — `GET /hostname` → 200,
   `GET /` → 403, `POST /hostname` → 403. This unblocks
   [`pod-identity-and-l7`](pod-identity-and-l7/), now built.
+
+## Blocked on one spike: Istio cannot run on this backend as configured
+
+Four specs across three domains need a service mesh —
+[`istio-peer-authentication`](04-security-and-policy/istio-peer-authentication/),
+[`istio-authorization-policy`](04-security-and-policy/istio-authorization-policy/),
+[`tracing-with-jaeger`](05-observability/tracing-with-jaeger/), and the Istio half of
+[`egress-gateway`](03-traffic-management/egress-gateway/) and
+[`gateway-api-portability`](02-services-and-dns/gateway-api-portability/).
+
+**None of them can be built until one question is settled.** Cilium's own documentation is explicit
+that `kubeProxyReplacement` disrupts Istio, because it enables socket-based load balancing *inside
+Pod network namespaces* — and this backend is confirmed running exactly that, with
+`Socket LB Coverage: Full`. Cilium requires `socketLB.hostNamespaceOnly: true` and
+`cni.exclusive: false` for the combination to work, and the backend has neither.
+
+The failure mode is the dangerous kind: sidecars inject, Pods go Ready, traffic flows — and the
+proxy sees a destination already rewritten to a Pod IP, so anything depending on the *Service*
+identity stops working silently. Same shape as the kube-proxy surprise that broke
+[`packet-path-with-linux-tools`](packet-path-with-linux-tools/) after it shipped.
+
+[`cni-install-and-configure`](cni-install-and-configure/) already installs Cilium with chosen Helm
+values, so the fix exists — it just has to become a prerequisite, and be proven on a live cluster
+before any of the four are written. **One spike unblocks all of them**, which is why it should come
+before any of the specs it gates.
 
 ## Build order
 
@@ -196,5 +221,35 @@ nothing.
 > ClusterIP. Gate on `Accepted` and on the Service's ClusterIP existing; a `Programmed` gate makes the step
 > impossible to pass.
 
-> Planned from a supplied domain outline, not the published CNCF curriculum. Reconcile the objectives and
-> weightings against the official document before treating this as authoritative.
+## Reconciled against the curriculum's sub-topics
+
+The roadmap has been reconciled against the 22 sub-topics of the five domains, each with its mapped
+technology. Every spec now carries a **Mapped tech** row naming what the sub-topic expects, because
+several objectives name two technologies that are not interchangeable — `egress-gateway` is Cilium's
+datapath SNAT *and* Istio's proxy hop, `transparent-encryption` and
+[`istio-peer-authentication`](04-security-and-policy/istio-peer-authentication/) are two halves of one
+objective, and [`pod-identity-and-l7`](pod-identity-and-l7/) and
+[`istio-authorization-policy`](04-security-and-policy/istio-authorization-policy/) likewise.
+
+**Domain folders stay the organising axis, not technology.** A technology axis would duplicate —
+`gateway-api-portability` is four implementations, `egress-gateway` is two — and it would push
+scenarios past the two-level indexing limit described above.
+
+**Two objectives are currently claimed by two specs each, and one of each pair has to give way:**
+
+- *Troubleshooting E2E Network Performance with Tracing* —
+  [`latency-attribution`](05-observability/latency-attribution/) and
+  [`tracing-with-jaeger`](05-observability/tracing-with-jaeger/). The second is the one that matches
+  the mapped technology; the first predates the reconciliation and should either be absorbed into it
+  or re-scoped to metrics-based attribution, which no spec currently owns outright.
+- *Troubleshooting Service Network Traffic* —
+  [`traffic-policy-and-source-ip`](02-services-and-dns/traffic-policy-and-source-ip/) and
+  [`service-traffic-triage`](02-services-and-dns/service-traffic-triage/). The first is really about
+  `externalTrafficPolicy` and arguably belongs under *Configuring L4 Services*; the second is the
+  triage lab the objective describes.
+
+Resolve both before building either pair, so two labs are not written against the same sub-topic.
+
+> Reconciled from a supplied domain outline with per-sub-topic technology mappings. Treat the
+> weightings as authoritative for build order; check the objective titles against the published
+> CNCF document before quoting them in lab text.

@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Service Networking & DNS (25%) |
 | **Exam objective** | Configuring Pod Endpoint Availability |
+| **Mapped tech** | Kubernetes-generic (readiness probes / Endpoints / EndpointSlices) |
 | **Proposed backend** | `kubernetes-kubeadm-1node` |
 | **Feasibility** | Ready |
 
