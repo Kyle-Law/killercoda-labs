@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Service Networking & DNS (25%) |
 | **Exam objective** | Configuring and Troubleshooting Cluster DNS |
+| **Mapped tech** | Kubernetes-generic (CoreDNS) |
 | **Proposed backend** | `kubernetes-kubeadm-1node` |
 | **Feasibility** | Ready — stock Kubernetes and CoreDNS, no CNI dependency. Two things to confirm first, below. |
 

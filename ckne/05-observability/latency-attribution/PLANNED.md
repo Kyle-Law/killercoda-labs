@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Observability (15%) |
 | **Exam objective** | Troubleshooting End to End Network Performance with Tracing |
+| **Mapped tech** | Jaeger + Istio/Envoy (trace generation) |
 | **Proposed backend** | `kubernetes-kubeadm-2nodes` |
 | **Feasibility** | Ready |
 

@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Core Infrastructure & CNI (15%) |
 | **Exam objective** | Configuring Multi-interface Pods |
+| **Mapped tech** | Kubernetes-generic (Multus territory; Cilium has partial multi-network support) |
 | **Proposed backend** | `kubernetes-kubeadm-2nodes` |
 | **Feasibility** | Verify first |
 

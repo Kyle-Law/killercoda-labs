@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Network Security & Policy (25%) |
 | **Exam objective** | Implementing Node and Pod Level Encryption |
+| **Mapped tech** | Cilium (IPsec/WireGuard) |
 | **Proposed backend** | `kubernetes-kubeadm-2nodes` |
 | **Feasibility** | Verify first |
 

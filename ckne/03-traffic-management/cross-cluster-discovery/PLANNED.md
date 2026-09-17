@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Advanced Traffic Management (20%) |
 | **Exam objective** | Implementing Cross Cluster Service Discovery and Load Balancing |
+| **Mapped tech** | Istio (multi-cluster mesh) + Cilium (Cluster Mesh) |
 | **Proposed backend** | `kubernetes-kubeadm-2nodes` |
 | **Feasibility** | Blocked — needs two clusters |
 

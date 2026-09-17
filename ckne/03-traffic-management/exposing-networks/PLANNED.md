@@ -6,6 +6,7 @@
 |---|---|
 | **CKNE domain** | Advanced Traffic Management (20%) |
 | **Exam objective** | Implementing Routing to Expose Networks |
+| **Mapped tech** | Gateway API + Istio + Envoy |
 | **Proposed backend** | `kubernetes-kubeadm-2nodes` |
 | **Feasibility** | Verify first |
 
