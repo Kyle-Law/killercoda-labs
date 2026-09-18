@@ -43,8 +43,11 @@ that looks like a one-line change is a one-line change plus every policy you att
 
 - **Which two controllers.** Envoy Gateway is already used by two built labs; Cilium is already
   installed and has a Gateway API implementation, which would make it the cheapest second
-  controller and avoids installing anything. Istio is the curriculum's third but drags in the
-  socket-LB prerequisite recorded in `ckne/README.md`.
+  controller and avoids installing anything. Istio is the curriculum's third and is **not** ruled
+  out: gateway-only Istio is unaffected by the socket-LB constraint in `ckne/README.md`, and
+  [`inference-gateway`](../../03-traffic-management/inference-gateway/) runs it on this backend
+  already — including the `networking.istio.io/service-type: NodePort` annotation that gets a
+  Gateway to `Programmed=True` here.
 - Whether two Gateway API controllers coexist cleanly on one node, given both want to own the
   CRDs. Envoy Gateway's chart installs its own copy — that conflict is already documented in
   `llm-routing`'s init and would need solving again here, differently.
