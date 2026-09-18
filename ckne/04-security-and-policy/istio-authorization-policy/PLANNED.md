@@ -8,7 +8,7 @@
 | **Exam objective** | Implementing Pod-level Authentication and Authorization |
 | **Mapped tech** | Istio (AuthorizationPolicy / PeerAuthentication) |
 | **Proposed backend** | `kubernetes-kubeadm-1node` |
-| **Feasibility** | **Verify first** — gated on the Istio-on-Cilium prerequisite in `ckne/README.md` |
+| **Feasibility** | **Blocked** — needs a sidecar or ambient data plane, which is the case the socket-LB constraint in `ckne/README.md` genuinely blocks |
 
 ## What it teaches
 

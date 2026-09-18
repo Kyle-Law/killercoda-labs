@@ -8,7 +8,7 @@
 | **Exam objective** | Troubleshooting E2E Network Performance with Tracing |
 | **Mapped tech** | Jaeger + Istio/Envoy (trace generation) |
 | **Proposed backend** | `kubernetes-kubeadm-1node` |
-| **Feasibility** | **Verify first** — gated on the Istio-on-Cilium prerequisite in `ckne/README.md` |
+| **Feasibility** | **Verify first** — not on the mesh constraint, but on whether this needs a mesh at all (below) |
 
 ## What it teaches
 
@@ -43,8 +43,12 @@ teaches in a minute.
 
 ## Must resolve before building
 
-- **The prerequisite in `ckne/README.md`** — the Istio-on-Cilium socket-LB interaction. This lab
-  needs a mesh to generate the spans; the same blocker as both Istio labs.
+- **Whether this needs a mesh at all — decide first, it changes everything else.** A *gateway-only*
+  Istio or Envoy install is not affected by the socket-LB constraint in `ckne/README.md`, and
+  [`inference-gateway`](../../03-traffic-management/inference-gateway/) proves gateway-only Istio
+  runs on this backend. But a gateway emits spans for hops *it* handles, and steps 2 and 3 are
+  about hops the application owns. If per-hop spans need sidecars, this lab inherits the mesh
+  blocker; if the three services can be strung through one gateway, it does not.
 - **Whether a mesh is needed at all.** Envoy Gateway also emits spans and is already installed by
   two built labs. A gateway-only version would lose the multi-hop story that steps 2 and 3
   depend on — the whole point is hops the application owns. Decide early; it changes the lab.

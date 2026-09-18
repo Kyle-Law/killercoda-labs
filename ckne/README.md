@@ -81,30 +81,39 @@ readable with `cilium-dbg service list`, which holds exactly the mapping the ipt
   `GET /` → 403, `POST /hostname` → 403. This unblocks
   [`pod-identity-and-l7`](pod-identity-and-l7/), now built.
 
-## Blocked on one spike: Istio cannot run on this backend as configured
+## The Istio constraint is narrower than it looks
 
-Four specs across three domains need a service mesh —
-[`istio-peer-authentication`](04-security-and-policy/istio-peer-authentication/),
-[`istio-authorization-policy`](04-security-and-policy/istio-authorization-policy/),
-[`tracing-with-jaeger`](05-observability/tracing-with-jaeger/), and the Istio half of
-[`egress-gateway`](03-traffic-management/egress-gateway/) and
-[`gateway-api-portability`](02-services-and-dns/gateway-api-portability/).
+Five specs name Istio. **The blocker applies to two of them, not five** — a distinction established
+by a runbook that ran Istio successfully on a kubeadm + Cilium cluster of the same shape as this
+backend.
 
-**None of them can be built until one question is settled.** Cilium's own documentation is explicit
-that `kubeProxyReplacement` disrupts Istio, because it enables socket-based load balancing *inside
-Pod network namespaces* — and this backend is confirmed running exactly that, with
-`Socket LB Coverage: Full`. Cilium requires `socketLB.hostNamespaceOnly: true` and
-`cni.exclusive: false` for the combination to work, and the backend has neither.
+Cilium's documentation says `kubeProxyReplacement` disrupts Istio because it enables socket-based
+load balancing *inside Pod network namespaces*, and this backend is confirmed running exactly that
+with `Socket LB Coverage: Full`. But read what it disrupts: **sidecar proxies and the ambient node
+proxy**. A gateway-only Istio install has neither. The gateway is a standalone Envoy that receives
+endpoints from pilot rather than resolving a ClusterIP, so socket LB never enters its path.
 
-The failure mode is the dangerous kind: sidecars inject, Pods go Ready, traffic flows — and the
-proxy sees a destination already rewritten to a Pod IP, so anything depending on the *Service*
-identity stops working silently. Same shape as the kube-proxy surprise that broke
-[`packet-path-with-linux-tools`](packet-path-with-linux-tools/) after it shipped.
+| Spec | Needs | Status |
+|---|---|---|
+| [`inference-gateway`](03-traffic-management/inference-gateway/) | Istio as gateway only | **Not blocked** — proven on kubeadm + Cilium |
+| [`gateway-api-portability`](02-services-and-dns/gateway-api-portability/) | Istio as gateway only | Not blocked, if Istio is the second controller |
+| [`tracing-with-jaeger`](05-observability/tracing-with-jaeger/) | depends on scope | Not blocked if gateway-scoped; blocked if it needs per-hop spans from a mesh |
+| [`istio-peer-authentication`](04-security-and-policy/istio-peer-authentication/) | a real data plane | **Blocked** — mTLS between workloads needs sidecars or ambient |
+| [`istio-authorization-policy`](04-security-and-policy/istio-authorization-policy/) | a real data plane | **Blocked** — same |
 
+For the two that are genuinely blocked, the fix is known and the failure mode is the dangerous kind:
+sidecars inject, Pods go Ready, traffic flows, and anything depending on *Service* identity stops
+working silently — the same shape as the kube-proxy surprise that broke
+[`packet-path-with-linux-tools`](packet-path-with-linux-tools/) after it shipped. Cilium requires
+`socketLB.hostNamespaceOnly: true` and `cni.exclusive: false`;
 [`cni-install-and-configure`](cni-install-and-configure/) already installs Cilium with chosen Helm
-values, so the fix exists — it just has to become a prerequisite, and be proven on a live cluster
-before any of the four are written. **One spike unblocks all of them**, which is why it should come
-before any of the specs it gates.
+values, so that spike has somewhere to start.
+
+> **A Gateway *can* reach `Programmed=True` here after all.** The note elsewhere in this file — that
+> no load-balancer controller exists, so the data-plane Service never gets an address — is escapable:
+> `networking.istio.io/service-type: NodePort` on the Gateway makes Istio expose it as a NodePort
+> instead, and it programs. That is an Istio-specific annotation; Envoy Gateway needs its own
+> equivalent, which is why the labs built on it still gate on `Accepted`.
 
 ## Build order
 
@@ -216,10 +225,15 @@ that one when the attempts run out. Each step's text carries a line pointing at 
 were unpassable at those steps: the learner's redirect failed with `No such file or directory` and the check said
 nothing.
 
-> **The Gateway never reaches `Programmed=True` on this backend.** There is no load-balancer controller, so the
-> Envoy data-plane Service gets no external address — `AddressNotAssigned` — while serving perfectly on its
-> ClusterIP. Gate on `Accepted` and on the Service's ClusterIP existing; a `Programmed` gate makes the step
+> **An Envoy Gateway `Gateway` does not reach `Programmed=True` here by default.** There is no load-balancer
+> controller, so the data-plane Service gets no external address — `AddressNotAssigned` — while serving perfectly
+> on its ClusterIP. Gate on `Accepted` and on the Service's ClusterIP existing; a `Programmed` gate makes the step
 > impossible to pass.
+>
+> This is a property of how the Service is requested, not of the backend: Istio's
+> `networking.istio.io/service-type: NodePort` annotation makes it a NodePort instead, and the Gateway then
+> programs — see [the Istio section above](#the-istio-constraint-is-narrower-than-it-looks). Envoy Gateway needs
+> its own equivalent, which the labs built on it do not currently use.
 
 ## Reconciled against the curriculum's sub-topics
 
