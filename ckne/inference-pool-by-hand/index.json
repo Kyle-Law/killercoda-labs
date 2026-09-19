@@ -1,0 +1,19 @@
+{
+  "title": "Wiring an Inference Pool",
+  "description": "Assemble an InferencePool and its endpoint picker by hand, then meet the three ways it can be running, healthy and completely useless: a permission it will not start without, a TLS instruction no Gateway API object can express, and a failureMode whose two values behave identically",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      { "title": "The two objects the chart would have written", "text": "step1/text.md", "verify": "step1/verify.sh" },
+      { "title": "The permission it will not start without",     "text": "step2/text.md", "verify": "step2/verify.sh" },
+      { "title": "Every object green, every request failing",     "text": "step3/text.md", "verify": "step3/verify.sh" },
+      { "title": "A field with two values and one behaviour",     "text": "step4/text.md", "verify": "step4/verify.sh" }
+    ],
+    "finish": { "text": "finish.md" }
+  },
+  "backend": { "imageid": "kubernetes-kubeadm-1node" }
+}
