@@ -23,6 +23,7 @@ where depth doesn't matter because there is no `index.json` to find.
 | [`flow-logs-and-drops`](flow-logs-and-drops/) | Observability |
 | [`pod-identity-and-l7`](pod-identity-and-l7/) | Network Security & Policy |
 | [`inference-gateway`](inference-gateway/) | Advanced Traffic Management |
+| [`inference-pool-by-hand`](inference-pool-by-hand/) | Advanced Traffic Management |
 
 ## Domain weights and current coverage
 
@@ -30,7 +31,7 @@ where depth doesn't matter because there is no `index.json` to find.
 |---|---|---|
 | [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 3 of 6 built |
 | [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 10 built |
-| [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 2 of 6 built |
+| [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 3 of 7 built |
 | [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 2 of 5 built, plus the `netpol/` labs below |
 | [Observability](05-observability/) | 15% | Partial — 1 of 4 built |
 
@@ -169,8 +170,14 @@ Chosen by exam weight × current gap, not by domain number.
     eight requests queued scores 5 against an idle replica's 4 — **queue depth is measured,
     scored, and structurally unable to win**. Changing one integer inverts it, and the chart
     silently reverts that integer on the next upgrade.
-11. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
-12. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
+11. ~~**`inference-pool-by-hand`**~~ — **built** as
+    [`inference-pool-by-hand`](inference-pool-by-hand/), the companion to `inference-gateway`:
+    that lab installs a pool with Helm and tunes it, this one assembles one by hand and meets the
+    three ways it runs healthy and useless — a permission the picker will not start without, a TLS
+    instruction no Gateway API object can express, and a `failureMode` whose two values are
+    indistinguishable from outside.
+12. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
+13. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
 
 ## Labs that live outside this folder
 
