@@ -1,0 +1,39 @@
+{
+  "title": "The Inference Gateway",
+  "description": "A load balancer that can see the queue, and routes to the drowning replica anyway: the Gateway API Inference Extension, an endpoint picker that scores replicas on cache, queue and memory, and the weighting that makes queue depth unable to win",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "A backend that is not a Service",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "All of it goes to one replica, and that is correct",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "A queue forms, and it loses anyway",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "One integer",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}

@@ -22,6 +22,7 @@ where depth doesn't matter because there is no `index.json` to find.
 | [`llm-routing`](llm-routing/) | Advanced Traffic Management |
 | [`flow-logs-and-drops`](flow-logs-and-drops/) | Observability |
 | [`pod-identity-and-l7`](pod-identity-and-l7/) | Network Security & Policy |
+| [`inference-gateway`](inference-gateway/) | Advanced Traffic Management |
 
 ## Domain weights and current coverage
 
@@ -29,7 +30,7 @@ where depth doesn't matter because there is no `index.json` to find.
 |---|---|---|
 | [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 3 of 6 built |
 | [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 10 built |
-| [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 1 of 6 built |
+| [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 2 of 6 built |
 | [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 2 of 5 built, plus the `netpol/` labs below |
 | [Observability](05-observability/) | 15% | Partial — 1 of 4 built |
 
@@ -95,7 +96,7 @@ endpoints from pilot rather than resolving a ClusterIP, so socket LB never enter
 
 | Spec | Needs | Status |
 |---|---|---|
-| [`inference-gateway`](03-traffic-management/inference-gateway/) | Istio as gateway only | **Not blocked** — proven on kubeadm + Cilium |
+| [`inference-gateway`](inference-gateway/) | Istio as gateway only | **Not blocked** — proven on kubeadm + Cilium |
 | [`gateway-api-portability`](02-services-and-dns/gateway-api-portability/) | Istio as gateway only | Not blocked, if Istio is the second controller |
 | [`tracing-with-jaeger`](05-observability/tracing-with-jaeger/) | depends on scope | Not blocked if gateway-scoped; blocked if it needs per-hop spans from a mesh |
 | [`istio-peer-authentication`](04-security-and-policy/istio-peer-authentication/) | a real data plane | **Blocked** — mTLS between workloads needs sidecars or ambient |
@@ -161,8 +162,15 @@ Chosen by exam weight × current gap, not by domain number.
    `403`-versus-`000` distinction that reveals which layer refused, the Envoy redirect that enforces it and
    what it costs, and two silent traps — a broad L4 allow unioning away a narrow L7 rule, and an `ipBlock`
    naming the correct Pod IP that matches nothing at all.
-10. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
-11. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
+10. ~~**`03-traffic-management/inference-gateway`**~~ — **built** as
+    [`inference-gateway`](inference-gateway/), the sequel to `llm-routing` and the first lab
+    built from a working runbook rather than from a spec: the endpoint picker scores replicas on
+    prefix cache, queue depth and KV usage weighted 3/2/2, so a replica holding the prefix with
+    eight requests queued scores 5 against an idle replica's 4 — **queue depth is measured,
+    scored, and structurally unable to win**. Changing one integer inverts it, and the chart
+    silently reverts that integer on the next upgrade.
+11. **Defer everything marked `Verify first`** until each has been individually checked against a live cluster.
+12. **Treat cross-cluster as out of scope** unless nested clusters prove workable.
 
 ## Labs that live outside this folder
 
