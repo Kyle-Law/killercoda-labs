@@ -14,7 +14,7 @@
 
 The third lab on this sub-topic, and the one that covers the named product rather than the
 mechanism. [`llm-routing`](../../llm-routing/) is plain Envoy Gateway and its limits;
-[`inference-gateway`](../inference-gateway/) is the Gateway API Inference Extension. Envoy AI
+[`inference-gateway`](../../inference-gateway/) is the Gateway API Inference Extension. Envoy AI
 Gateway is the third thing the curriculum names and is neither of those.
 
 What it adds over a general-purpose proxy: rate limiting denominated in **tokens** rather than
@@ -55,7 +55,7 @@ already committed.
 ## Cross-links
 
 - Third in a sequence: [`llm-routing`](../../llm-routing/) →
-  [`inference-gateway`](../inference-gateway/) → this. Each should name the next.
+  [`inference-gateway`](../../inference-gateway/) → this. Each should name the next.
 - Reuses the simulator and the `llmload` open-loop generator from `llm-routing`.
 
 ---

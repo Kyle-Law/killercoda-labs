@@ -45,7 +45,7 @@ teaches in a minute.
 
 - **Whether this needs a mesh at all — decide first, it changes everything else.** A *gateway-only*
   Istio or Envoy install is not affected by the socket-LB constraint in `ckne/README.md`, and
-  [`inference-gateway`](../../03-traffic-management/inference-gateway/) proves gateway-only Istio
+  [`inference-gateway`](../../inference-gateway/) proves gateway-only Istio
   runs on this backend. But a gateway emits spans for hops *it* handles, and steps 2 and 3 are
   about hops the application owns. If per-hop spans need sidecars, this lab inherits the mesh
   blocker; if the three services can be strung through one gateway, it does not.
