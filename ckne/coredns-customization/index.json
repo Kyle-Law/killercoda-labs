@@ -1,6 +1,6 @@
 {
   "title": "Customizing CoreDNS",
-  "description": "The Corefile as a configuration file rather than a black box: stub domains, rewrites, why plugin order in the file is not execution order, and why a broken Corefile is dangerous precisely because nothing breaks",
+  "description": "The Corefile as a configuration file rather than a black box: stub domains, rewrites, a hosts block that silently takes over every name in its server block, why plugin order is not the order you wrote, and the broken Corefile that takes nothing down until a Pod restarts",
   "details": {
     "intro": {
       "text": "intro.md",
@@ -24,9 +24,14 @@
         "verify": "step3/verify.sh"
       },
       {
-        "title": "Break it, and notice what doesn't happen",
+        "title": "The plugin that answers for names you never gave it",
         "text": "step4/text.md",
         "verify": "step4/verify.sh"
+      },
+      {
+        "title": "Break it, and notice what doesn't happen",
+        "text": "step5/text.md",
+        "verify": "step5/verify.sh"
       }
     ],
     "finish": {
