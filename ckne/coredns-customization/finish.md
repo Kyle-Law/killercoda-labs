@@ -22,4 +22,4 @@
 - [`networking/multi-port-services`](../../networking/multi-port-services/) — what a Service name resolves *to*, and how ports and endpoints hang off it
 - [`ckne/README.md`](../README.md) — this lab covers the CKNE "Customizing CoreDNS for Services" objective in Service Networking & DNS
 
-> Not covered here, and worth reading about before an exam: `hosts` for static entries, `template` for synthesising answers, `autopath` for cutting the search-domain round trips that `ndots:5` causes, and `k8s_external` for exposing Services under a domain you own.
+> Not covered here, and worth reading about before an exam: `template` for synthesising answers, `autopath` for cutting the search-domain round trips that `ndots:5` causes, and `k8s_external` for exposing Services under a domain you own.

@@ -3,30 +3,57 @@
 # Every exit path below says why. Killercoda only reads the exit code, so the
 # explanation is written to /root/.check and the learner reads it with `why`.
 LOG=/root/.check
-STEP="Step 4 · Break it, and notice what doesn't happen"
+STEP="Step 4 · The plugin that answers for names you never gave it"
 : > "$LOG"
 fail() { { echo "x $STEP"; echo; printf '%s\n' "$@"; } | tee "$LOG"; exit 1; }
 pass() { echo "OK $STEP -- passed." | tee "$LOG"; exit 0; }
 
-# The stored config has to be valid again -- leaving the typo in place is the
-# whole hazard this step is about, and DNS answering is not evidence that it
-# is gone.
 COREFILE=$(kubectl -n kube-system get cm coredns -o jsonpath='{.data.Corefile}' 2>/dev/null)
-echo "$COREFILE" | grep -q "forwardd" && fail \
-  "The broken directive is still in the stored Corefile." \
+[ -n "$COREFILE" ] || fail \
+  "Could not read the 'coredns' ConfigMap." \
   "" \
-  "DNS answering is not evidence that it is gone -- the running Pods are serving" \
-  "from the last config they could parse, and the next restart will pick up this" \
-  "one and fail. Repair the ConfigMap:" \
-  "  kubectl -n kube-system get cm coredns -o jsonpath='{.data.Corefile}' | grep -n forwardd" \
-  "  kubectl -n kube-system edit cm coredns"
+  "  kubectl -n kube-system get cm coredns -o yaml"
 
-echo "$COREFILE" | grep -qE '^\s*forward\s+\.' || fail \
-  "The stored Corefile has no 'forward .' directive at all." \
+echo "$COREFILE" | grep -qE '^\s*hosts(\s|\{|$)' || fail \
+  "The live Corefile has no 'hosts' block." \
   "" \
-  "Repairing the typo means putting the original directive back, not deleting" \
-  "the line -- without it nothing outside the cluster resolves:" \
-  "  kubectl -n kube-system get cm coredns -o jsonpath='{.data.Corefile}'"
+  "The address has to be served from inside CoreDNS rather than forwarded --" \
+  "nothing upstream owns storage.internal, so forwarding it can only ever fail." \
+  "" \
+  "The running Corefile is:" \
+  "$(echo "$COREFILE" | sed 's/^/  /' | head -24)"
+
+echo "$COREFILE" | grep -q "10.99.0.60" || fail \
+  "The hosts block does not contain the address 10.99.0.60." \
+  "" \
+  "Entries are written the way /etc/hosts writes them -- address first, then the" \
+  "name:" \
+  "  hosts {" \
+  "      10.99.0.60 nas.storage.internal" \
+  "      fallthrough" \
+  "  }"
+
+# The whole point of the step: without fallthrough the block is authoritative
+# for everything it is asked, and the damage lands on names it never mentions.
+#
+# Scoped to the hosts block deliberately: the kubernetes plugin carries its own
+# "fallthrough in-addr.arpa ip6.arpa", so a bare grep for the word is satisfied
+# by a line that has nothing to do with this step.
+HOSTSBLOCK=$(echo "$COREFILE" | awk '/^[[:space:]]*hosts([[:space:]]|\{|$)/{f=1} f{print} f&&/^[[:space:]]*}/{exit}')
+echo "$HOSTSBLOCK" | grep -q "fallthrough" || fail \
+  "The hosts block has no 'fallthrough'." \
+  "" \
+  "Check what that costs before adding it -- ask for a Service name and see what" \
+  "comes back:" \
+  "  dnsq web.default.svc.cluster.local" \
+  "" \
+  "A 'hosts' block with no fallthrough answers for every name it is asked about," \
+  "not just the ones you listed -- anything absent fails there instead of being" \
+  "passed to the next plugin. And 'hosts' runs before 'kubernetes' in CoreDNS's" \
+  "compiled plugin order, so it sees Service lookups first." \
+  "" \
+  "Your hosts block, as applied:" \
+  "$(echo "$HOSTSBLOCK" | sed 's/^/  /')"
 
 CLUSTER_IP=$(kubectl get svc web -o jsonpath='{.spec.clusterIP}' 2>/dev/null)
 [ -n "$CLUSTER_IP" ] || fail \
@@ -34,55 +61,35 @@ CLUSTER_IP=$(kubectl get svc web -o jsonpath='{.spec.clusterIP}' 2>/dev/null)
   "" \
   "  kubectl get svc"
 
-# A healthy cluster with a valid Corefile is also the state this step *starts*
-# in, so that alone would pass without the step being done. The evidence that
-# it was done is a CoreDNS Pod that crashed on the broken config and recovered:
-# restart counts it could not have had beforehand.
-RESTARTED=$(kubectl -n kube-system get pods -l k8s-app=kube-dns \
-  -o jsonpath='{range .items[*]}{.status.containerStatuses[*].restartCount}{"\n"}{end}' 2>/dev/null \
-  | awk '$1 > 0' | wc -l)
-[ "$RESTARTED" -ge 1 ] || fail \
-  "No CoreDNS Pod has ever restarted, so the break was never actually felt." \
-  "" \
-  "That is the point of the step: a Corefile CoreDNS cannot parse takes nothing" \
-  "down until a Pod restarts, and until then the cluster looks perfectly healthy." \
-  "Apply the broken config, watch DNS carry on working, then force a restart and" \
-  "watch it fail:" \
-  "  kubectl -n kube-system rollout restart deploy coredns" \
-  "  kubectl -n kube-system get pods -l k8s-app=kube-dns -w"
+for _ in $(seq 1 30); do
+  NAS=$(kubectl exec dnstools -- dig +short nas.storage.internal 2>/dev/null | tr -d '[:space:]')
+  WEB=$(kubectl exec dnstools -- dig +short web.default.svc.cluster.local 2>/dev/null | tr -d '[:space:]')
+  DB=$(kubectl exec dnstools -- dig +short db.corp.internal 2>/dev/null | tr -d '[:space:]')
+  LEGACY=$(kubectl exec dnstools -- dig +short legacy-api.example.com 2>/dev/null | tr -d '[:space:]')
 
-for _ in $(seq 1 36); do
-  # Every CoreDNS Pod must actually be able to start on the stored config.
-  DESIRED=$(kubectl -n kube-system get deploy coredns -o jsonpath='{.spec.replicas}' 2>/dev/null)
-  READY=$(kubectl -n kube-system get deploy coredns -o jsonpath='{.status.readyReplicas}' 2>/dev/null)
-
-  if [ -n "$DESIRED" ] && [ "$DESIRED" == "$READY" ]; then
-    NOTRUNNING=$(kubectl -n kube-system get pods -l k8s-app=kube-dns \
-      -o jsonpath='{range .items[*]}{.status.phase}{"\n"}{end}' 2>/dev/null | grep -cv '^Running$')
-
-    if [ "$NOTRUNNING" == "0" ]; then
-      # And the work from the earlier steps must have survived the recovery.
-      WEB=$(kubectl exec dnstools -- dig +short web.default.svc.cluster.local 2>/dev/null | tr -d '[:space:]')
-      DB=$(kubectl exec dnstools -- dig +short db.corp.internal 2>/dev/null | tr -d '[:space:]')
-      LEGACY=$(kubectl exec dnstools -- dig +short legacy-api.example.com 2>/dev/null | tr -d '[:space:]')
-
-      [ "$WEB" == "$CLUSTER_IP" ] && [ "$DB" == "10.99.0.42" ] && [ "$LEGACY" == "$CLUSTER_IP" ] && pass
-    fi
+  if [ "$NAS" == "10.99.0.60" ] && [ "$WEB" == "$CLUSTER_IP" ] \
+     && [ "$DB" == "10.99.0.42" ] && [ "$LEGACY" == "$CLUSTER_IP" ]; then
+    pass
   fi
   sleep 5
 done
 
 fail \
-  "The Corefile is repaired, but the cluster has not come all the way back." \
+  "The hosts block is in place, but not everything resolves the way it should." \
   "" \
-  "  coredns ready:                 ${READY:-0} of ${DESIRED:-0}" \
-  "  web.default.svc.cluster.local  ->  ${WEB:-<nothing>}   (expected $CLUSTER_IP)" \
-  "  db.corp.internal               ->  ${DB:-<nothing>}   (expected 10.99.0.42)" \
-  "  legacy-api.example.com         ->  ${LEGACY:-<nothing>}   (expected $CLUSTER_IP)" \
+  "  nas.storage.internal          ->  ${NAS:-<nothing>}   (expected 10.99.0.60)" \
+  "  web.default.svc.cluster.local ->  ${WEB:-<nothing>}   (expected $CLUSTER_IP)" \
+  "  db.corp.internal              ->  ${DB:-<nothing>}   (expected 10.99.0.42)" \
+  "  legacy-api.example.com        ->  ${LEGACY:-<nothing>}   (expected $CLUSTER_IP)" \
   "" \
-  "Pods that crashed on the broken config stay down until they are restarted," \
-  "and the stub zone and rewrite from steps 2 and 3 have to still be in the" \
-  "repaired file:" \
-  "  kubectl -n kube-system get pods -l k8s-app=kube-dns" \
-  "  kubectl -n kube-system logs -l k8s-app=kube-dns --tail=20" \
-  "  kubectl -n kube-system get cm coredns -o jsonpath='{.data.Corefile}'"
+  "If only nas.storage.internal works, the hosts block is swallowing everything" \
+  "else -- that is the fallthrough problem, and it is worth looking at before you" \
+  "fix it." \
+  "" \
+  "If nas.storage.internal is the one failing, check the entry is inside the" \
+  "'.:53' block and that CoreDNS reloaded:" \
+  "  corefile" \
+  "  corednsstatus" \
+  "" \
+  "The stub zone from step 2 and the rewrite from step 3 both have to survive" \
+  "this step."
