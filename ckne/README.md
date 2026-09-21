@@ -32,7 +32,7 @@ where depth doesn't matter because there is no `index.json` to find.
 | [Core Infrastructure & CNI](01-core-cni/) | 15% | Partial — 3 of 6 built |
 | [Service Networking & DNS](02-services-and-dns/) | 25% | Partial — 2 of 10 built |
 | [Advanced Traffic Management](03-traffic-management/) | 20% | Partial — 3 of 7 built |
-| [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 2 of 5 built, plus the `netpol/` labs below |
+| [Network Security & Policy](04-security-and-policy/) | 25% | Partial — 2 of 6 built, plus the `netpol/` labs below |
 | [Observability](05-observability/) | 15% | Partial — 1 of 4 built |
 
 Domain order is **not** build order. See [Build order](#build-order).
@@ -110,6 +110,15 @@ working silently — the same shape as the kube-proxy surprise that broke
 `socketLB.hostNamespaceOnly: true` and `cni.exclusive: false`;
 [`cni-install-and-configure`](cni-install-and-configure/) already installs Cilium with chosen Helm
 values, so that spike has somewhere to start.
+
+**There is also a route to part of that ground with no mesh at all.**
+[`mtls-without-a-mesh`](04-security-and-policy/mtls-without-a-mesh/) issues server and client
+certificates from a cert-manager CA and has the server require one — workload identity from a
+certificate subject rather than from an IP, and a refusal that happens inside the handshake where no
+status code exists to report it. It does **not** cover the blocked specs' objective and must not be
+described as doing so; it covers the identity half while
+[`transparent-encryption`](04-security-and-policy/transparent-encryption/) still owns the encryption
+half. But it is buildable today, and the two Istio specs are not.
 
 > **A Gateway *can* reach `Programmed=True` here after all.** The note elsewhere in this file — that
 > no load-balancer controller exists, so the data-plane Service never gets an address — is escapable:
