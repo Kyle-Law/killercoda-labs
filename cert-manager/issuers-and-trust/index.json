@@ -1,0 +1,39 @@
+{
+  "title": "cert-manager Issuers, Namespaces and Trust",
+  "description": "Where an issuer lives and whose Secret it reads: a Certificate that applies cleanly and never issues, a ClusterIssuer that cannot find a Secret you are looking straight at, and the gap between a certificate being Ready and a client actually trusting it",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "A reference that resolves to nothing",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "The namespace you never typed",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "Ready is not the same as trusted",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "One CA, every namespace that asked",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}

@@ -13,15 +13,28 @@ which of your workloads will notice.
 
 ## Status
 
-Nothing here is built yet. Each directory holds a single `PLANNED.md` design spec and deliberately
-no `index.json` — Killercoda only indexes directories that have one, so nothing here can be published
-by accident.
+One lab built. The rest are `PLANNED.md` design specs with deliberately no `index.json` — Killercoda
+only indexes directories that have one, so nothing unfinished here can be published by accident.
 
-| Spec | Feasibility | Finding |
+| Lab | Status | Finding |
 |---|---|---|
-| [`issuers-and-trust`](issuers-and-trust/) | **Ready** | cert-manager fails silently at apply time; the reason is on an object you were never told about |
-| [`certificate-renewal`](certificate-renewal/) | Ready, one claim to version-check | The new certificate is on disk and the old one is on the wire |
-| [`acme-http01`](acme-http01/) | **Verify first** — needs Pebble | An HTTP01 failure is an HTTP routing failure |
+| [`issuers-and-trust`](issuers-and-trust/) | **Built** | cert-manager fails silently at apply time; the reason is on an object you were never told about |
+| [`certificate-renewal`](certificate-renewal/) | Planned — ready, one claim to version-check | The new certificate is on disk and the old one is on the wire |
+| [`acme-http01`](acme-http01/) | Planned — **verify first**, needs Pebble | An HTTP01 failure is an HTTP routing failure |
+
+### What building the first one settled
+
+Two things the spec got wrong, both caught on a live cluster and both now load-bearing in the lab:
+
+- **`ErrGetKeyPair` names no namespace at all.** The spec said a `ClusterIssuer` "fails naming a
+  namespace the learner never wrote". It does not — it says `secrets "root-ca-tls" not found` and
+  stops, while `kubectl get secret` in the namespace you created it in shows the Secret quite
+  happily. The omission is what makes it confusing, so the lab is built around the omission.
+- **Trusting the leaf works.** The spec assumed handing a client `tls.crt` would fail and so
+  distinguish itself from `ca.crt`. OpenSSL anchors on the exact certificate presented, so `curl`
+  succeeds and the mistake is invisible on the day it is made. Step 3's check therefore gates on
+  `CA:TRUE` rather than on whether the request worked, and tells the learner their file verified and
+  is still wrong.
 
 Two related specs live elsewhere, because they are about their folder's subject rather than about
 certificates:
@@ -33,9 +46,10 @@ certificates:
 
 ## Build order
 
-1. **[`issuers-and-trust`](issuers-and-trust/)** — no new components, deterministic failures, and the
-   prerequisite for everything else here. Nobody debugs an ACME `Order` without first having met a
-   `CertificateRequest`.
+1. ~~**`issuers-and-trust`**~~ — **built**. Four steps on `kubernetes-kubeadm-1node`: a
+   cross-namespace `issuerRef` that applies cleanly and never issues, a `ClusterIssuer` that cannot
+   find a Secret you are looking straight at, `Ready: True` with `curl` exit 60, and a
+   `trust-manager` `Bundle` that distributes the CA by label and refuses to carry the key.
 2. **[`certificate-renewal`](certificate-renewal/)** — reuses that lab's init wholesale, and lands the
    best finding of the set.
 3. Then whichever of the remaining three has the most value at the time. `acme-http01` is the most
