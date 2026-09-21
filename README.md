@@ -10,7 +10,7 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `networking/` — Services, Ingress, Gateway API
 - `troubleshooting/` — Pods, control plane, Services/DNS, nodes, RBAC, resource usage
 - `cluster-admin/` — etcd backup/restore, kubeadm maintenance
-- `cert-manager/` — certificate management as the subject rather than as scenery: where an issuer lives and whose Secret it reads, what a renewal actually changes and which workloads never notice, and ACME run locally against Pebble. Design specs only so far — see [`cert-manager/README.md`](cert-manager/README.md)
+- `cert-manager/` — certificate management as the subject rather than as scenery: where an issuer lives and whose Secret it reads, what a renewal actually changes and which workloads never notice, and ACME run locally against Pebble. One lab built, the rest design specs — see [`cert-manager/README.md`](cert-manager/README.md)
 - `helm/` — Helm end to end: releases, chart versions, values, rollbacks, safe deploys, templating
 - `gitops/` — Argo CD: sync/health, drift & self-heal, sync waves & hooks, Helm/Kustomize sources, history & rollback, App-of-Apps & ApplicationSet, a declarative Helm-backed App-of-Apps, the full UI on a multi-node cluster, a self-hosted Gitea source, Gitea webhooks with auto-sync/self-heal/prune; plus standalone Argo Rollouts canary & blue-green
 - `observability/` — the operator pattern, Prometheus Operator, ServiceMonitors
