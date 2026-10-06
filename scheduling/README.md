@@ -19,12 +19,12 @@ descheduler that revisits what the scheduler will never revisit.
 
 ## Status
 
-All design specs. Like every other unfinished lab here, each has a `PLANNED.md` and deliberately no
-`index.json`, so nothing here can be published by accident.
+One lab built. The rest are `PLANNED.md` design specs with deliberately no `index.json` — Killercoda
+only indexes directories that have one, so nothing unfinished here can be published by accident.
 
 | # | Lab | Status | Finding |
 |---|---|---|---|
-| 1 | [`scheduler-by-hand`](scheduler-by-hand/) | Planned — ready, three claims to verify | The scheduler is not a gate. Anything that writes `spec.nodeName` skips it, and the kubelet re-checks only some of what it skipped |
+| 1 | [`scheduler-by-hand`](scheduler-by-hand/) | **Built** | The scheduler is not a gate. Anything that writes `spec.nodeName` skips it, and the kubelet re-checks only some of what it skipped. A `NoExecute` taint is enforced twice and leaves no Pod to inspect |
 | 2 | [`filter-and-score`](filter-and-score/) | Planned — **needs KWOK** | `FailedScheduling` gives one reason per node, the first one. Fix it and a reason you were never shown appears |
 | 3 | [`topology-spread`](topology-spread/) | Planned — **needs KWOK** | A zone you cannot schedule into still counts as an empty zone |
 | 4 | [`preemption-in-depth`](preemption-in-depth/) | Planned — ready, two claims to verify | Preemption picks victims, not a node. The winner is only *nominated*, and it waits out every victim's grace period |
@@ -32,6 +32,39 @@ All design specs. Like every other unfinished lab here, each has a `PLANNED.md` 
 | 6 | [`scheduler-extender`](scheduler-extender/) | Planned — **needs KWOK** | `ignorable` decides which outage you get: no scheduling at all, or no policy, reported in one `Info` log line |
 | 7 | [`descheduler`](descheduler/) | Planned — **verify first**, needs KWOK | Give the scheduler and the descheduler different goals and they move the same Pod back and forth forever |
 | 8 | [`load-aware-scheduling`](load-aware-scheduling/) | Planned — **verify first**, heaviest | The scheduler places on requests, not usage. A node at 100% CPU looks empty |
+
+### What building the first one settled
+
+Run end to end on a two-node kind cluster (Kubernetes v1.37.0, the init and every check executed as
+root inside the control-plane container, and every command in the Solution blocks extracted from the
+markdown and run as written). Five things the spec had wrong or open, all now load-bearing:
+
+- **`NoExecute` is enforced twice, and the Pod does not survive to be inspected.** The spec said the
+  kubelet refuses it and it goes `Failed`. What happens: the kubelet writes `Predicate TaintToleration
+  failed`, the control plane's `taint-eviction-controller` writes `Marking for deletion`, and the Pod
+  is gone within seconds. Five trials out of five produced both events. The check therefore gates on the
+  kubelet's event rather than on a Pod, because events outlive the object they are about.
+- **There are three different outcomes, not one.** Bound by hand against a `nodeSelector`, the kubelet
+  rejects it and the Pod **stays** as `Failed` / `NodeAffinity`. Against a `NoSchedule` taint, nothing
+  objects and it runs. The spec's third rule, an oversized CPU request, became step 5 because its
+  outcome (`Failed` / `OutOfcpu`, never rescheduled) is the one that feeds a loop.
+- **"No `FailedScheduling` event" was the weaker discriminator.** A Pod no scheduler has looked at has
+  no events **and no `PodScheduled` condition at all**; a gated or refused Pod has the condition with a
+  reason. That is on the Pod itself, so step 1 is built on it.
+- **The orphaned Pod is deleted, not failed, in 52–70 seconds.** The spec expected about 40; PodGC
+  runs every 20s and quarantines for 40s. `Binding` validates nothing about the node, and nothing
+  records the deletion: no event, no condition.
+- **The runaway has no back-off.** Failed Pods climbed at about 1.4 a second (82 in a minute) and
+  84 were still there after the loop stopped. Failed Pods are not collected until 12500 exist.
+
+One thing learned that was not in the spec: `pkill -f by-hand.sh` run from a `bash -c` string kills
+the shell running it, because the pattern matches its own command line. It is harmless in a learner's
+interactive terminal, and it is why the test harness uses `pkill -f '[b]y-hand.sh'`.
+
+Observed incidentally and worth carrying into [`filter-and-score`](filter-and-score/): a Pod with a
+`nodeSelector` no node satisfies got `1 node(s) didn't match Pod's node affinity/selector, 1 node(s)
+had untolerated taint(s)`. The control-plane node lacked the label *and* carried the taint, and
+reported only the taint, which is first-failure-only filtering seen on a live cluster.
 
 The numbers give the **learning order**. The build order is different (see [Build order](#build-order)).
 
@@ -105,8 +138,10 @@ before a lab quotes it, and reproduce the behaviour before writing it down:
 
 Chosen by what unblocks what, not by learning order.
 
-1. **[`scheduler-by-hand`](scheduler-by-hand/)**: no KWOK dependency, runs on
-   `kubernetes-kubeadm-2nodes`, and every later lab assumes its central idea.
+1. ~~**`scheduler-by-hand`**~~ — **built**. Five steps on `kubernetes-kubeadm-2nodes`: three Pods
+   that are `Pending` for three different reasons, a `Binding` POSTed by hand, a sixteen-line bash
+   scheduler, three rules skipped and three different enforcers, and a runaway of `Failed` Pods with no
+   back-off.
 2. **The KWOK spike** above. Labs 2, 3, 6 and 7 are blocked until it lands.
 3. **[`scheduler-profiles`](scheduler-profiles/)**: its main finding is documented rather than
    inferred, and it leaves behind a scheduler started with `--config`. Labs 2, 6 and 7 each need that
