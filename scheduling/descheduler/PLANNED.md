@@ -20,8 +20,8 @@ job.
 ## The finding at its heart
 
 **Give the scheduler and the descheduler different goals and they move the same Pod back and forth
-forever.** Run the scheduler's `bin-packing` profile (`MostAllocated`) from
-[`scheduler-profiles`](../scheduler-profiles/) alongside the descheduler's `LowNodeUtilization`, which
+forever.** Run the scheduler's `bin-packing` profile (`MostAllocated`, **with the built-in spreading switched off
+for that profile**, or it does not pack at all; see [`scheduler-profiles`](../scheduler-profiles/) step 2) alongside the descheduler's `LowNodeUtilization`, which
 spreads. The descheduler evicts from the busy node, the scheduler packs the replacement back onto it,
 and the next descheduling cycle evicts it again. Both are working exactly as configured. The pairing
 that agrees with bin-packing is `HighNodeUtilization`.
