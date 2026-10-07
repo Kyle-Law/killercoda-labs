@@ -6,8 +6,8 @@
 |---|---|
 | **Topic** | `topologySpreadConstraints`: skew, domains, and what the scheduler counts |
 | **CKA relevance** | Workloads & Scheduling: spreading replicas across failure domains |
-| **Proposed backend** | `kubernetes-kubeadm-1node` + KWOK (3 zones × 2 fake nodes) |
-| **Feasibility** | Blocked on the KWOK spike. Steps 3 and 4 need their numbers found on a live cluster |
+| **Proposed backend** | `kubernetes-kubeadm-1node` + KWOK (6 fake nodes: `kwok-nodes.sh 6` gives 3 zones × 2) |
+| **Feasibility** | Ready: fake nodes come from [`../kwok-nodes.sh`](../kwok-nodes.sh) (spike done). Steps 3 and 4 need their numbers found on a live cluster |
 
 ## What it teaches
 
@@ -53,8 +53,10 @@ which is why this happens with taints and not with a `nodeSelector`.)
   then by readiness and age. On KWOK, with one Pod per fake node, the ties may resolve the same way
   every time, or randomly. If the result isn't reliably skewed, construct the starting placement so
   that it is.
-- Whether KWOK nodes need `topology.kubernetes.io/zone` set in the node template or added after
-  creation. That's a detail of the shared init.
+- ~~Whether KWOK nodes need `topology.kubernetes.io/zone` set in the node template or added after
+  creation.~~ In the template: [`kwok-nodes.sh`](../kwok-nodes.sh) sets `zone-a`/`zone-b`/`zone-c`
+  round-robin, and 30 nodes came out exactly 10 per zone. Resolved. But the *taint* in step 2 must be
+  added after, and a resize wipes it.
 
 ## Cross-links
 

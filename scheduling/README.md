@@ -25,12 +25,12 @@ only indexes directories that have one, so nothing unfinished here can be publis
 | # | Lab | Status | Finding |
 |---|---|---|---|
 | 1 | [`scheduler-by-hand`](scheduler-by-hand/) | **Built** | The scheduler is not a gate. Anything that writes `spec.nodeName` skips it, and the kubelet re-checks only some of what it skipped. A `NoExecute` taint is enforced twice and leaves no Pod to inspect |
-| 2 | [`filter-and-score`](filter-and-score/) | Planned — **needs KWOK** | `FailedScheduling` gives one reason per node, the first one. Fix it and a reason you were never shown appears |
-| 3 | [`topology-spread`](topology-spread/) | Planned — **needs KWOK** | A zone you cannot schedule into still counts as an empty zone |
+| 2 | [`filter-and-score`](filter-and-score/) | Planned — ready (KWOK spike done) | `FailedScheduling` gives one reason per node, the first one. Fix it and a reason you were never shown appears |
+| 3 | [`topology-spread`](topology-spread/) | Planned — ready (KWOK spike done) | A zone you cannot schedule into still counts as an empty zone |
 | 4 | [`preemption-in-depth`](preemption-in-depth/) | Planned — ready, two claims to verify | Preemption picks victims, not a node. The winner is only *nominated*, and it waits out every victim's grace period |
 | 5 | [`scheduler-profiles`](scheduler-profiles/) | Planned — ready, one error message to capture | Adding `--config` silently disables the `--kubeconfig` flag on the line above it |
-| 6 | [`scheduler-extender`](scheduler-extender/) | Planned — **needs KWOK** | `ignorable` decides which outage you get: no scheduling at all, or no policy, reported in one `Info` log line |
-| 7 | [`descheduler`](descheduler/) | Planned — **verify first**, needs KWOK | Give the scheduler and the descheduler different goals and they move the same Pod back and forth forever |
+| 6 | [`scheduler-extender`](scheduler-extender/) | Planned — ready (KWOK spike done) | `ignorable` decides which outage you get: no scheduling at all, or no policy, reported in one `Info` log line |
+| 7 | [`descheduler`](descheduler/) | Planned — **verify first** (KWOK is ready; the descheduler is not) | Give the scheduler and the descheduler different goals and they move the same Pod back and forth forever |
 | 8 | [`load-aware-scheduling`](load-aware-scheduling/) | Planned — **verify first**, heaviest | The scheduler places on requests, not usage. A node at 100% CPU looks empty |
 
 ### What building the first one settled
@@ -76,9 +76,13 @@ and 7 need many nodes, and the backends offer two.
 
 **[KWOK](https://kwok.sigs.k8s.io/)** solves this. Its controller makes `Node` objects look `Ready` and
 reports any Pod bound to them as `Running`, with no kubelet behind either. The real `kube-scheduler`
-places Pods on them with nothing faked on its side, so thirty nodes in three zones cost a few
-megabytes. Each lab that needs it copies one init script (`init/kwok-nodes.sh`) wholesale, the same way
-`certificate-renewal` reuses `issuers-and-trust`'s init.
+places Pods on them with nothing faked on its side. [`kwok-nodes.sh`](kwok-nodes.sh) is the tested
+init: `kwok-nodes.sh 30` installs KWOK v0.8.0 and ends with exactly 30 fake nodes spread over three
+zones. Each lab that needs it copies the file into its own `init/`, the same way `certificate-renewal`
+reuses `issuers-and-trust`'s init.
+
+Pods that should land on fake nodes need **both** `nodeSelector: {type: kwok}` and a toleration for
+`kwok.x-k8s.io/node`. The selector matters as much as the toleration, see below.
 
 What KWOK cannot fake, and which lab therefore needs a real kubelet:
 
@@ -88,27 +92,81 @@ What KWOK cannot fake, and which lab therefore needs a real kubelet:
 | Graceful termination | A victim's grace period is the whole point of step 1 | 4 |
 | Actual CPU usage | Nothing to measure | 8 |
 
-### Must resolve before building anything on KWOK
+### What the KWOK spike settled
 
-This is the `cni-install-and-configure` of this folder: one spike unblocks four labs, so do it first.
+Run on kind, Kubernetes v1.37.0, one untainted control-plane node, Cilium 1.19.7 with
+`kubeProxyReplacement=true` (the backend's shape), Docker given 12 CPUs and 10 GB. Every claim below
+was observed, not inferred.
 
-- **DaemonSets land on fake nodes.** Cilium's DaemonSets tolerate every taint, so 30 fake nodes means
-  60 fake Cilium Pods. That's harmless at 30 and possibly fatal at the 500 that `filter-and-score`
-  step 4 wants. Decide whether the init patches a `kwok.x-k8s.io/node DoesNotExist` node affinity
-  onto Cilium's DaemonSets, then confirm `cilium-operator` doesn't react badly to Nodes that never get
-  a `CiliumNode`.
-- **Keep real system Pods off fake nodes.** Taint every fake node `NoSchedule`. CoreDNS tolerates only
-  the control-plane taint and `CriticalAddonsOnly`, so it stays put. Lab Pods carry the toleration.
-  `TaintToleration` scores only `PreferNoSchedule` taints, so the toleration costs no score. That last
-  claim is from the plugin's documented behaviour. Confirm it in the step 2 score logs.
-- **Keep lab Pods off the real node.** The real node has images in `status.images` and fake nodes have
-  none, so `ImageLocality` quietly favours the real node and distorts every score comparison. Pin lab
-  workloads to fake nodes by label.
-- **Measure the ceiling.** How many fake nodes the 1-node backend's API server and etcd will carry
-  before `kubectl` slows down. Lab 2 step 4 wants about 500.
-- **Fallback if any of the above goes badly:** `kwokctl create cluster --runtime binary` on the
-  `ubuntu` backend. That's a whole fake cluster with its own apiserver and scheduler and no CNI at
-  all. It loses the kubeadm static-Pod realism that lab 5 depends on, so it is a fallback, not the plan.
+- **Cilium does not react to fake nodes.** With 30 of them it ran 60 fake `cilium` and `cilium-envoy`
+  Pods, all `Running` because KWOK invents the status, while the real agent stayed at 33/33 controllers
+  healthy and 1/1 nodes reachable, there was still exactly one `CiliumNode`, and the operator logged no
+  errors or warnings. Harmless at 30. At 500 it would be 1000 fake Pods, which is what the next point avoids.
+- **Keeping DaemonSets off needs no patching.** Both Cilium DaemonSets tolerate every taint, so the
+  `NoSchedule` taint does nothing to them, but both carry `nodeSelector: kubernetes.io/os=linux`. The
+  fake nodes are labelled `kubernetes.io/os=fake` and never match. Two alternatives were tried and
+  rejected: the chart's own `cilium.io/no-schedule` label (honoured by `cilium-envoy`, **ignored by the
+  agent**, whose Pod stayed put) and a `nodeAffinity` patch (works, but restarts the real agent and
+  *replaces* envoy's existing affinity). A DaemonSet with no such selector would still get a fake Pod
+  per node.
+- **System Pods stay off.** CoreDNS scaled to 12 put all 12 on the real node.
+- **The `ImageLocality` bias is real but modest.** Twenty tolerating Pods with no `nodeSelector`: 4
+  landed on the real node against a fair share of under one. With `nodeSelector: type: kwok`, 30 Pods
+  went one per fake node, exactly.
+- **500 nodes is comfortable.** Measured from *inside* the control-plane container, which is what a
+  learner on the VM has:
+
+  | Fake nodes | Create | All Ready | `kubectl get nodes` | Idle API server / etcd |
+  |---|---|---|---|---|
+  | 30 | 0.2s | 0.2s | 0.1s | 6.5% / 5.0% CPU |
+  | 250 | 5.2s | 5.8s | 0.5s | 18% / 9.5% |
+  | 500 | 8.4s | 8.9s | 0.7s | 22% / 12% |
+
+  Memory grew by about 100 MB. The steady cost is roughly **52 lease writes a second** at 501 nodes,
+  about a third of a CPU. So scale to 500 only in the step that needs it, and wipe afterwards.
+- **Delete fake nodes by label, never by name.** `kubectl delete nodes -l type=kwok` removed 280 nodes
+  in 2.8s; deleting them by name ran at about a node a second. `kwok-nodes.sh` resizes by wiping and
+  recreating.
+- **Measure from inside, not through Docker Desktop.** The first ceiling run, driven from the host, saw a
+  150-node apply take 1083 seconds. It was not Kubernetes: the same operation inside the container took
+  5 seconds. A learner on a Killercoda VM does not have that hop.
+
+**Still open, so say it before building on it:**
+
+- **Not run on Killercoda.** Everything above is kind with a generous Docker allocation. The Killercoda
+  VM is smaller, and a third of a CPU at 500 nodes is the number to check against it.
+- **The `os=fake` trick was proven on a surrogate, not on live Cilium.** A DaemonSet with Cilium's exact
+  selector and tolerations got `desired=1`; one without a selector got `desired=31`. The live Cilium
+  DaemonSets' selectors were read off the API, and their health under fake nodes was observed, but the
+  final combination was not re-run: the fresh cluster's image pulls from `quay.io` stalled for
+  17 minutes, so the script test used a plain cluster instead. Re-run it once against a Cilium cluster.
+- **One unexplained empty result.** Immediately after recreating 60 nodes, a label applied to one of them
+  had no effect (a test saw 0 of 20 Pods on it, then 17 of 20 on a rerun). The script waits for Ready
+  and settles for two seconds; a lab that depends on a node label straight after a resize should check
+  it first.
+
+## Observed on a cluster by the spike
+
+Kind, Kubernetes v1.37.0, the scheduler static Pod edited the way a lab would edit it:
+
+- **`--vmodule=schedule_one=10` works**, and logs every plugin's score for every node plus a final
+  total. **The logged scores are already weighted**: `TaintToleration` logs 300 (3 × 100), and the
+  plugin lines sum exactly to the final score (300 + 98 + 0 + 0 + 0 = 398).
+- **Only plugins with something to say vote.** A bare Pod with no constraints was scored by five
+  (`TaintToleration`, `NodeResourcesFit`, `VolumeBinding`, `DynamicResources`, `ImageLocality`). The
+  others skip.
+- **Node sampling is exact and visible.** At 500 nodes `feasibleNodes=230` on every Pod, which is 46%
+  (`50 − 500/125`). The line is `"Successfully bound pod to node"` and is `V(2)`, so **it is absent at
+  default verbosity**.
+- **The default scheduler batches identical Pods.** `OpportunisticBatching` (KEP-5598) is Beta and on
+  by default since v1.35 and reuses scoring work across Pods with the same signature. Switching it off
+  with `--feature-gates=OpportunisticBatching=false` changed 20 identical replicas at 501 nodes from
+  12, 12, 12 of 20 on the preferred node (identical every trial) to 8, 9, 8. Any lab that
+  schedules a Deployment's replicas and draws a conclusion about per-Pod scoring is measuring this.
+  [`filter-and-score`](filter-and-score/) has the full table.
+- **A preference is not a guarantee even with nothing in the way.** At 61 nodes, below the sampling
+  threshold, 20 replicas preferring one node put **17** on it, not 20, every trial and with batching
+  on or off.
 
 ## Confirmed from upstream source, not yet on a cluster
 
@@ -123,14 +181,13 @@ before a lab quotes it, and reproduce the behaviour before writing it down:
   non-success status, so each node in a `FailedScheduling` message carries one reason, in plugin order.
 - **The kubelet re-checks `NoExecute` taints only**, and skips even that for static Pods:
   `// Kubelet is only interested in the NoExecute taint.` (`pkg/kubelet/lifecycle/predicate.go`).
-- **Per-plugin scores are logged at `V(10)`** as `"Plugin scored node for pod"` and
-  `"Calculated node's final score for pod"` (`pkg/scheduler/schedule_one.go`).
 - **Extender scores are scaled into the plugin range:** `score * weight * (MaxNodeScore / MaxExtenderPriority)`,
   so an extender's 0–10 lands on the same 0–100 scale as plugins.
 - **An extender with empty `managedResources` receives every Pod**, and an ignorable extender that
   fails is skipped with an `Info`-level log line, with no event and no warning.
 - **Node sampling never applies below 100 nodes** (`minFeasibleNodesToFind = 100`), and never drops
-  below 5%.
+  below 5%. The budget is computed from the candidate list, which a PreFilter may have narrowed, not
+  from all nodes (`pkg/scheduler/algorithm.go`).
 - **`--kubeconfig` is ignored when `--config` is set**, along with `--kube-api-qps`, `--kube-api-burst`,
   `--kube-api-content-type`, `--profiling` and `--contention-profiling`.
 
@@ -142,7 +199,8 @@ Chosen by what unblocks what, not by learning order.
    that are `Pending` for three different reasons, a `Binding` POSTed by hand, a sixteen-line bash
    scheduler, three rules skipped and three different enforcers, and a runaway of `Failed` Pods with no
    back-off.
-2. **The KWOK spike** above. Labs 2, 3, 6 and 7 are blocked until it lands.
+2. ~~**The KWOK spike**~~ — **done**: [`kwok-nodes.sh`](kwok-nodes.sh), and the results above. Labs 2,
+   3 and 6 are unblocked. Lab 7 still needs the descheduler checked against a v1.37 cluster.
 3. **[`scheduler-profiles`](scheduler-profiles/)**: its main finding is documented rather than
    inferred, and it leaves behind a scheduler started with `--config`. Labs 2, 6 and 7 each need that
    in their init.
