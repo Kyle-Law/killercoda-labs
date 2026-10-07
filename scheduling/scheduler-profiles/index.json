@@ -1,0 +1,39 @@
+{
+  "title": "A Second Scheduler Profile",
+  "description": "Move a kubeadm scheduler onto a config file and add a bin-packing profile, and meet the three ways that goes quietly wrong: a flag that stops meaning anything, a default nobody wrote that outvotes your strategy, and a config that leaves every ordinary Pod without a scheduler",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "Two failures, both \"the file is right there\"",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "A profile that does not pack",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "The profile you left out",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "A typo is a refusal",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}

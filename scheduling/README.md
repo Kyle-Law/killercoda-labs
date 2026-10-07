@@ -19,7 +19,7 @@ descheduler that revisits what the scheduler will never revisit.
 
 ## Status
 
-One lab built. The rest are `PLANNED.md` design specs with deliberately no `index.json` — Killercoda
+Two labs built. The rest are `PLANNED.md` design specs with deliberately no `index.json` — Killercoda
 only indexes directories that have one, so nothing unfinished here can be published by accident.
 
 | # | Lab | Status | Finding |
@@ -28,7 +28,7 @@ only indexes directories that have one, so nothing unfinished here can be publis
 | 2 | [`filter-and-score`](filter-and-score/) | Planned — ready (KWOK spike done) | `FailedScheduling` gives one reason per node, the first one. Fix it and a reason you were never shown appears |
 | 3 | [`topology-spread`](topology-spread/) | Planned — ready (KWOK spike done) | A zone you cannot schedule into still counts as an empty zone |
 | 4 | [`preemption-in-depth`](preemption-in-depth/) | Planned — ready, two claims to verify | Preemption picks victims, not a node. The winner is only *nominated*, and it waits out every victim's grace period |
-| 5 | [`scheduler-profiles`](scheduler-profiles/) | Planned — ready, one error message to capture | Adding `--config` silently disables the `--kubeconfig` flag on the line above it |
+| 5 | [`scheduler-profiles`](scheduler-profiles/) | **Built** | Adding `--config` silently disables the `--kubeconfig` flag on the line above it, and a `bin-packing` profile that does not pack is being outvoted by a default nobody wrote |
 | 6 | [`scheduler-extender`](scheduler-extender/) | Planned — ready (KWOK spike done) | `ignorable` decides which outage you get: no scheduling at all, or no policy, reported in one `Info` log line |
 | 7 | [`descheduler`](descheduler/) | Planned — **verify first** (KWOK is ready; the descheduler is not) | Give the scheduler and the descheduler different goals and they move the same Pod back and forth forever |
 | 8 | [`load-aware-scheduling`](load-aware-scheduling/) | Planned — **verify first**, heaviest | The scheduler places on requests, not usage. A node at 100% CPU looks empty |
@@ -65,6 +65,51 @@ Observed incidentally and worth carrying into [`filter-and-score`](filter-and-sc
 `nodeSelector` no node satisfies got `1 node(s) didn't match Pod's node affinity/selector, 1 node(s)
 had untolerated taint(s)`. The control-plane node lacked the label *and* carried the taint, and
 reported only the taint, which is first-failure-only filtering seen on a live cluster.
+
+### What building `scheduler-profiles` settled
+
+Run end to end on a fresh kind cluster (Kubernetes v1.37.0, twelve fake nodes from `kwok-nodes.sh`),
+the real init executed as root in the control-plane container and every Solution block extracted from
+the markdown and run as written. The spec was wrong or silent on six things:
+
+- **The second failure is better than the spec expected.** With `--config` set and mounted, the
+  scheduler logs `Neither --kubeconfig nor --master was specified` while
+  `--kubeconfig=/etc/kubernetes/scheduler.conf` is on its own command line. The spec guessed at a
+  missing `KUBERNETES_SERVICE_HOST`; the real message flatly contradicts the manifest, and ends in
+  `invalid configuration: no configuration has been provided, try setting KUBERNETES_MASTER environment variable`.
+  The first failure is `open /etc/kubernetes/scheduler-config.yaml: no such file or directory`, for a
+  file that is plainly on the host.
+- **The effective config is not logged, but it is served.** The spec's check was to read it from the
+  startup log. At default verbosity there is nothing: no profile, no `percentageOfNodesToScore`. The
+  scheduler serves it at `/configz` on its secure port, defaults applied, and it needs a client
+  certificate (anonymous gets 403). `admin.conf` carries one. Every check in the lab gates on that, so
+  it can tell "you edited the file" from "the process loaded it".
+- **Unknown fields are refused, not ignored.** Strict decoding, naming the field:
+  `unknown field "percentageOfNodeToScore"`, and inside plugin args
+  `unknown field "scoringStrategy.resourcess"`. A mismatched queue sort was not reachable with
+  in-tree plugins, since `PrioritySort` is the only one; a profile *without* one is refused
+  (`only one queue sort plugin required ... but got 0`), as are duplicate and missing names.
+- **A bin-packing profile that does not pack is the lab's real finding, and the spec had it as a
+  side note.** `MostAllocated` earned an occupied node 4 points (11 against 7) and the built-in
+  `PodTopologySpread` took 28 to 54 away, so twelve replicas still used twelve nodes. The built-in
+  spreading is applied to a Deployment's Pods and not to a bare Pod, which the plugin skips. Switching
+  it off for that profile (`defaultingType: List`, `defaultConstraints: []`) put twelve on one node
+  while `default-scheduler` still used twelve. **Anything that needs `bin-packing` to pack, such as
+  [`descheduler`](descheduler/), needs this.**
+- **`profiles` is the whole list, not a list of additions.** Naming only `bin-packing` starts cleanly
+  and serves `/configz`, and every Pod that names no scheduler is silently orphaned: `Pending`, no
+  events, no `PodScheduled` condition, nothing in the log. It is step 1 of `scheduler-by-hand` reached
+  by a config change. Built as step 3.
+- **The "restart a static Pod" trick the CKA teaches stops working after a few crashes.** Moving the
+  manifest away and back returns the *same Pod*: `kubernetes.io/config.hash` on the mirror Pod was
+  identical across the round trip and changed with an annotation. So it inherits the crash back-off
+  the earlier attempts built. Step 1's fix took 84 seconds, and the next restart landed inside a
+  2m40s back-off and timed the helper out. `restart-scheduler` changes a harmless annotation instead:
+  21 seconds, every time. This was found by the lab failing, not by reading about it.
+
+Two behaviours the spec did not expect, both now in the lab text: a Pod that was `Pending` because no
+profile answered for it is picked up the moment one does, and the scheduler's `-v` log never mentions
+that it is ignoring such a Pod.
 
 The numbers give the **learning order**. The build order is different (see [Build order](#build-order)).
 
@@ -149,6 +194,7 @@ was observed, not inferred.
 
 Kind, Kubernetes v1.37.0, the scheduler static Pod edited the way a lab would edit it:
 
+- **`/configz` serves the running configuration**, defaults applied, to a client certificate. It is how a check can tell what the process loaded from what the file says.
 - **`--vmodule=schedule_one=10` works**, and logs every plugin's score for every node plus a final
   total. **The logged scores are already weighted**: `TaintToleration` logs 300 (3 × 100), and the
   plugin lines sum exactly to the final score (300 + 98 + 0 + 0 + 0 = 398).
@@ -201,9 +247,9 @@ Chosen by what unblocks what, not by learning order.
    back-off.
 2. ~~**The KWOK spike**~~ — **done**: [`kwok-nodes.sh`](kwok-nodes.sh), and the results above. Labs 2,
    3 and 6 are unblocked. Lab 7 still needs the descheduler checked against a v1.37 cluster.
-3. **[`scheduler-profiles`](scheduler-profiles/)**: its main finding is documented rather than
-   inferred, and it leaves behind a scheduler started with `--config`. Labs 2, 6 and 7 each need that
-   in their init.
+3. ~~**`scheduler-profiles`**~~ — **built**. Four steps on `kubernetes-kubeadm-1node` with twelve fake
+   nodes. It leaves behind a scheduler started with `--config`; labs 2, 6 and 7 can copy its
+   `restart-scheduler` and `configz` helpers, and the manifest edits from its step 1.
 4. **[`filter-and-score`](filter-and-score/)**, then **[`topology-spread`](topology-spread/)**: the
    two most useful labs for daily work, once fake nodes exist.
 5. **[`scheduler-extender`](scheduler-extender/)**: needs no third-party image, only `python3` on the
