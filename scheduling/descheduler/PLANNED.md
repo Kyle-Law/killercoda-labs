@@ -7,7 +7,7 @@
 | **Topic** | The descheduler: evicting Pods whose placement has gone stale, and what it can't do |
 | **CKA relevance** | Beyond CKA. Explains why `IgnoredDuringExecution` is in the field name |
 | **Proposed backend** | `kubernetes-kubeadm-1node` + KWOK; descheduler pinned, as a Job then as a Deployment |
-| **Feasibility** | Verify first: the descheduler against KWOK nodes, and whether step 3's loop really happens |
+| **Feasibility** | Verify first: the descheduler against KWOK nodes (KWOK itself is ready, see [`../kwok-nodes.sh`](../kwok-nodes.sh)), and whether step 3's loop really happens |
 
 ## What it teaches
 

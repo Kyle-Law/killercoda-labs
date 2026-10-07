@@ -7,7 +7,7 @@
 | **Topic** | Scheduler extenders: `filter` and `prioritize` webhooks, and their failure semantics |
 | **CKA relevance** | Beyond CKA. Useful anywhere placement depends on something only an external system knows |
 | **Proposed backend** | `kubernetes-kubeadm-1node` + KWOK; the extender runs as `python3` on the host |
-| **Feasibility** | Blocked on the KWOK spike. No third-party images. One message to capture |
+| **Feasibility** | Ready: fake nodes come from [`../kwok-nodes.sh`](../kwok-nodes.sh) (spike done). No third-party images. One message to capture |
 
 ## What it teaches
 

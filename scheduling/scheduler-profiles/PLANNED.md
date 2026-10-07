@@ -7,7 +7,7 @@
 | **Topic** | `KubeSchedulerConfiguration`: moving a kubeadm scheduler to `--config`, profiles, plugin args |
 | **CKA relevance** | Cluster Architecture: static Pod manifests, and configuring control-plane components |
 | **Proposed backend** | `kubernetes-kubeadm-1node` + KWOK for step 2's placement contrast (steps 1, 3, 4 run without it) |
-| **Feasibility** | Ready for steps 1, 3 and 4. Step 2 waits on the KWOK spike. One error message to capture |
+| **Feasibility** | Ready. Step 2's fake nodes come from [`../kwok-nodes.sh`](../kwok-nodes.sh) (spike done). One error message to capture |
 
 ## What it teaches
 
