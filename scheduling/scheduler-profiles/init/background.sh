@@ -120,10 +120,21 @@ for _ in $(seq 1 120); do
   [ "$READY" -ge "$COUNT" ] && break
   sleep 0.5
 done
+
+# Ready is not schedulable. A new node carries node.kubernetes.io/not-ready:NoSchedule
+# until the node lifecycle controller removes it, and it removes them one node at a
+# time at about five a second: 12 nodes clear in a few seconds, 250 in about a
+# minute, 500 in about two. Until then those nodes are not candidates for anything,
+# which silently shrinks every "how many nodes did the scheduler look at" count.
+for _ in $(seq 1 $((COUNT / 3 + 60))); do
+  TAINTED=$(kubectl get nodes -l type=kwok -o jsonpath='{range .items[*]}{range .spec.taints[*]}{.key}{"\n"}{end}{end}' 2>/dev/null | grep -c 'node.kubernetes.io/not-ready')
+  [ "$TAINTED" -eq 0 ] && break
+  sleep 1
+done
 sleep 2
 
-echo "kwok-nodes: $READY of $COUNT fake nodes Ready"
-[ "$READY" -ge "$COUNT" ]
+echo "kwok-nodes: $READY of $COUNT fake nodes Ready, ${TAINTED:-0} still tainted not-ready"
+[ "$READY" -ge "$COUNT" ] && [ "${TAINTED:-0}" -eq 0 ]
 KWOKEOF
 chmod +x /root/kwok-nodes.sh
 bash /root/kwok-nodes.sh 12 >/dev/null 2>&1

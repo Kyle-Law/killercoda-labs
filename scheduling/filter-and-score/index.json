@@ -1,0 +1,39 @@
+{
+  "title": "Filter, Score, and the Node Nobody Looked At",
+  "description": "Read why a Pod fits nowhere, one reason per node and only the first; read every plugin's score for the node it did land on; watch a soft taint outvote a weight-100 preference; and find the nodes the scheduler never looked at",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      {
+        "title": "One reason per node, and only the first",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "Turn the lights on",
+        "text": "step2/text.md",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "A preference is a vote with a price",
+        "text": "step3/text.md",
+        "verify": "step3/verify.sh"
+      },
+      {
+        "title": "The nodes nobody looked at",
+        "text": "step4/text.md",
+        "verify": "step4/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
