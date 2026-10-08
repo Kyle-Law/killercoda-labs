@@ -19,13 +19,13 @@ descheduler that revisits what the scheduler will never revisit.
 
 ## Status
 
-Two labs built. The rest are `PLANNED.md` design specs with deliberately no `index.json` — Killercoda
+Three labs built. The rest are `PLANNED.md` design specs with deliberately no `index.json` — Killercoda
 only indexes directories that have one, so nothing unfinished here can be published by accident.
 
 | # | Lab | Status | Finding |
 |---|---|---|---|
 | 1 | [`scheduler-by-hand`](scheduler-by-hand/) | **Built** | The scheduler is not a gate. Anything that writes `spec.nodeName` skips it, and the kubelet re-checks only some of what it skipped. A `NoExecute` taint is enforced twice and leaves no Pod to inspect |
-| 2 | [`filter-and-score`](filter-and-score/) | Planned — ready (KWOK spike done) | `FailedScheduling` gives one reason per node, the first one. Fix it and a reason you were never shown appears |
+| 2 | [`filter-and-score`](filter-and-score/) | **Built** | `FailedScheduling` gives one reason per node, the first one; a `weight: 100` preference is worth 200 and one soft taint costs 300; and above 100 nodes the scheduler picks the best node *it looked at* |
 | 3 | [`topology-spread`](topology-spread/) | Planned — ready (KWOK spike done) | A zone you cannot schedule into still counts as an empty zone |
 | 4 | [`preemption-in-depth`](preemption-in-depth/) | Planned — ready, two claims to verify | Preemption picks victims, not a node. The winner is only *nominated*, and it waits out every victim's grace period |
 | 5 | [`scheduler-profiles`](scheduler-profiles/) | **Built** | Adding `--config` silently disables the `--kubeconfig` flag on the line above it, and a `bin-packing` profile that does not pack is being outvoted by a default nobody wrote |
@@ -111,6 +111,42 @@ Two behaviours the spec did not expect, both now in the lab text: a Pod that was
 profile answered for it is picked up the moment one does, and the scheduler's `-v` log never mentions
 that it is ignoring such a Pod.
 
+### What building `filter-and-score` settled
+
+Run end to end on a fresh kind cluster (v1.37.0): the real init as root in the control-plane container,
+every Solution block extracted from the markdown and run as written, and every check confirmed to fail
+before its task, on each wrong state and each wrong answer, and pass after. It also **corrected the
+spike that unblocked it**, which is the most important thing it found:
+
+- **A node that reports `Ready` is not schedulable, and `kwok-nodes.sh` returned before it was.** New
+  nodes keep `node.kubernetes.io/not-ready:NoSchedule` until the node lifecycle controller clears it,
+  about five a second. The script returned after 4 seconds with 479 of 500 nodes still tainted. It
+  now waits (250 nodes: 59s). This was found because a sampling count came out wrong: only 129 of 501
+  nodes were feasible, not 230.
+- **The batching finding from the spike is retracted.** It was measured on that unsettled fleet. Settled,
+  batching on and off give the same spread (see *Observed on a cluster*). The lab does not touch it.
+- **Step 3 is not the one the spec described.** The spec had a zone preference losing to default
+  spreading. What the log showed was cleaner and more surprising: one untolerated `PreferNoSchedule`
+  taint costs 300 (100 × `TaintToleration`'s weight of 3) and a `weight: 100` preference is worth 200
+  (100 × `NodeAffinity`'s weight of 2), so **a soft taint beats the strongest preference there is**:
+  6 of 6 replicas on the node, then 0 of 6, then 6 of 6 once they tolerated it. The default-spreading
+  erosion (`PodTopologySpread` falling from 200 to 14, 671 against 672, so 18 of 20 at a dozen nodes)
+  is in the recap as the baseline for step 4.
+- **Step 4 uses 250 nodes, not 500.** Same effect, a minute to settle instead of two: 251 nodes gives
+  `feasibleNodes=120` (a number that is not 100, so it cannot be mistaken for the percentage), 6 to
+  11 of 20 on the preferred node and varying, against **16 every time** with
+  `percentageOfNodesToScore: 100`. The fix is a one-line config change, which is why the lab's
+  scheduler starts out reading a config file, as it does at the end of
+  [`scheduler-profiles`](scheduler-profiles/).
+- **The log line is `evaluatedNodes=120 feasibleNodes=120`**, not 251: the scheduler *looked at* only
+  120 nodes before it stopped. The 296 to 396 readings in the spike were the unsettled fleet.
+- **Step 1's prediction is checkable against the cluster, not against a constant.** The check reads the
+  newest `FailedScheduling` message and compares the learner's `cpu=` and `selector=` counts to it, so
+  it stays right if the fleet is changed. The `preemption:` half of the message is explained: "not
+  helpful" for nodes where eviction cannot change a taint or a selector, "no victims" for full nodes
+  holding Pods of the same priority.
+
+
 The numbers give the **learning order**. The build order is different (see [Build order](#build-order)).
 
 ## The prerequisite: fake nodes
@@ -158,17 +194,21 @@ was observed, not inferred.
 - **The `ImageLocality` bias is real but modest.** Twenty tolerating Pods with no `nodeSelector`: 4
   landed on the real node against a fair share of under one. With `nodeSelector: type: kwok`, 30 Pods
   went one per fake node, exactly.
-- **500 nodes is comfortable.** Measured from *inside* the control-plane container, which is what a
-  learner on the VM has:
+- **A node that reports `Ready` is not yet schedulable, and the gap grows with the fleet.** A new
+  node carries `node.kubernetes.io/not-ready:NoSchedule` until the node lifecycle controller removes
+  it, and it removes them one at a time at about **five a second**. `kwok-nodes.sh` first returned
+  after 4 seconds with 479 of 500 nodes still tainted. It now waits for the taint to clear:
 
-  | Fake nodes | Create | All Ready | `kubectl get nodes` | Idle API server / etcd |
-  |---|---|---|---|---|
-  | 30 | 0.2s | 0.2s | 0.1s | 6.5% / 5.0% CPU |
-  | 250 | 5.2s | 5.8s | 0.5s | 18% / 9.5% |
-  | 500 | 8.4s | 8.9s | 0.7s | 22% / 12% |
+  | Fake nodes | `kwok-nodes.sh` returns after | Idle API server / etcd, settled |
+  |---|---|---|
+  | 12 | 7s | negligible |
+  | 250 | 59s | 3–16% / 2–7% of one CPU, 26 lease writes a second |
+  | 500 | about 110s (measured clearing, not end to end) | about double that, not measured settled |
 
-  Memory grew by about 100 MB. The steady cost is roughly **52 lease writes a second** at 501 nodes,
-  about a third of a CPU. So scale to 500 only in the step that needs it, and wipe afterwards.
+  An earlier version of this section reported 500 nodes "created in 8.9s", a third of a CPU idle, and
+  sampling results to match. **All of it measured a fleet whose taints had not cleared**, so fewer
+  than 230 nodes were feasible and nothing was skipped. See the retraction under *Observed on a
+  cluster*. Scale up only for the step that needs it, expect to wait, and wipe afterwards.
 - **Delete fake nodes by label, never by name.** `kubectl delete nodes -l type=kwok` removed 280 nodes
   in 2.8s; deleting them by name ran at about a node a second. `kwok-nodes.sh` resizes by wiping and
   recreating.
@@ -179,7 +219,7 @@ was observed, not inferred.
 **Still open, so say it before building on it:**
 
 - **Not run on Killercoda.** Everything above is kind with a generous Docker allocation. The Killercoda
-  VM is smaller, and a third of a CPU at 500 nodes is the number to check against it.
+  VM is smaller; the settled idle cost at 250 nodes and the time to settle are the numbers to check.
 - **The `os=fake` trick was proven on a surrogate, not on live Cilium.** A DaemonSet with Cilium's exact
   selector and tolerations got `desired=1`; one without a selector got `desired=31`. The live Cilium
   DaemonSets' selectors were read off the API, and their health under fake nodes was observed, but the
@@ -204,15 +244,43 @@ Kind, Kubernetes v1.37.0, the scheduler static Pod edited the way a lab would ed
 - **Node sampling is exact and visible.** At 500 nodes `feasibleNodes=230` on every Pod, which is 46%
   (`50 − 500/125`). The line is `"Successfully bound pod to node"` and is `V(2)`, so **it is absent at
   default verbosity**.
-- **The default scheduler batches identical Pods.** `OpportunisticBatching` (KEP-5598) is Beta and on
-  by default since v1.35 and reuses scoring work across Pods with the same signature. Switching it off
-  with `--feature-gates=OpportunisticBatching=false` changed 20 identical replicas at 501 nodes from
-  12, 12, 12 of 20 on the preferred node (identical every trial) to 8, 9, 8. Any lab that
-  schedules a Deployment's replicas and draws a conclusion about per-Pod scoring is measuring this.
-  [`filter-and-score`](filter-and-score/) has the full table.
-- **A preference is not a guarantee even with nothing in the way.** At 61 nodes, below the sampling
-  threshold, 20 replicas preferring one node put **17** on it, not 20, every trial and with batching
-  on or off.
+- **Retracted: "the default scheduler batches identical Pods and it changes the result".**
+  `OpportunisticBatching` (KEP-5598) does exist, Beta and on by default since v1.35. But the result
+  that appeared to show its effect (20 replicas, 501 nodes: 12, 12, 12 with it on, 8, 9, 8 with it
+  off) was measured while the nodes' not-ready taints were still clearing and does not reproduce.
+  With the fleet fully settled, 6 trials each: batching **on** 8, 9, 11, 9, 8, 13; batching **off**
+  13, 10, 7, 9, 12, 11. Both about ten, and a 7–13 spread that swamps any difference. **No measurable
+  effect on this experiment.** The mechanism is read from source, not demonstrated.
+- **Sampling is real, and one setting undoes it.** At 251 settled nodes the log says
+  `feasibleNodes=120` (48% of 251, from `50 − 251/125`) and 20 replicas preferring one node put
+  **6, 11, 11, 9, 11, 7** on it. With `percentageOfNodesToScore: 100` the log says `feasibleNodes=250`
+  and the count is **16 in all six trials**. Below 100 nodes there is no sampling, and the same
+  experiment gives **18 of 20, five trials out of five**.
+- **A preference is not a guarantee even with nothing in the way, and the log says why.** At 12 nodes
+  the preferred node scored `NodeAffinity` 200 but `PodTopologySpread` 14 (against 200 on an empty
+  node) and `NodeResourcesFit` 83 (against 98), for 671 against 672: it lost by one point. The built-in
+  spreading penalty grows with every replica on the node until it overtakes the preference.
+- **A soft taint outvotes a `weight: 100` preference.** One untolerated `PreferNoSchedule` taint on
+  the preferred node: `TaintToleration` 0 against 300 elsewhere, `NodeAffinity` 200 against 0. The
+  preference is worth 200 and the taint costs 300 (100 × the plugin weights of 2 and 3). Six
+  replicas: **6 of 6** reached the node, then **0 of 6** with the soft taint, then **6 of 6** again
+  once they tolerated it.
+- **A preferred term's `weight` only matters against other preferred terms.** The scheduler scales the
+  best-matching node to 100, so a lone term scored 200 on the matching node at `weight: 1` and at
+  `weight: 100` alike (6 of 6 Pods on the node at weights 1, 10, 50 and 100). With two terms the weaker
+  one is scaled against the stronger: weight 25 beside weight 100 scored 50. So "weight 100" is not a
+  strong wish; it is the only wish.
+- **Plugin weights decide the soft-taint contest, and they can be changed in a profile.** With the soft
+  taint on the preferred node and `weight: 100`, six replicas, `NodeAffinity` plugin weight 2, 3, 4, 5:
+  **0, 0, 3, 6** on the node. `TaintToleration` plugin weight 3, 2, 1: **0, 1, 3**. The syntax that works
+  is `plugins.multiPoint.enabled: [{name: NodeAffinity, weight: 5}]`, confirmed in `/configz`. The first
+  Pod's margin is `100 × (NodeAffinity weight − TaintToleration weight)`, and the later replicas erode
+  it, which is why a margin of +100 (weight 4) still gave only 3 of 6.
+- **`FailedScheduling` reports one reason per node, and the order is the filter order.** A fleet of
+  13 nodes failing four different ways gave `2 Insufficient cpu, 3 node(s) didn't match Pod's node
+  affinity/selector, 8 node(s) had untolerated taint(s)`; tolerating the taint gave `5 Insufficient
+  cpu, 8 node(s) didn't match … selector`. Taint, then selector, then resources: the 8 tainted nodes
+  had been hiding five cpu failures and three selector ones.
 
 ## Confirmed from upstream source, not yet on a cluster
 
@@ -250,8 +318,9 @@ Chosen by what unblocks what, not by learning order.
 3. ~~**`scheduler-profiles`**~~ — **built**. Four steps on `kubernetes-kubeadm-1node` with twelve fake
    nodes. It leaves behind a scheduler started with `--config`; labs 2, 6 and 7 can copy its
    `restart-scheduler` and `configz` helpers, and the manifest edits from its step 1.
-4. **[`filter-and-score`](filter-and-score/)**, then **[`topology-spread`](topology-spread/)**: the
-   two most useful labs for daily work, once fake nodes exist.
+4. ~~**`filter-and-score`**~~ — **built**: a fleet that fails four ways, per-plugin scores, a soft taint
+   beating a weight-100 preference, and sampling at 250 nodes. Then **[`topology-spread`](topology-spread/)**,
+   the default spreading that wore the preference out, written on purpose.
 5. **[`scheduler-extender`](scheduler-extender/)**: needs no third-party image, only `python3` on the
    host.
 6. **[`preemption-in-depth`](preemption-in-depth/)**: cheap to build, and the least urgent, because

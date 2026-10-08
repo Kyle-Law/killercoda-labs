@@ -62,8 +62,9 @@ which is why this happens with taints and not with a `nodeSelector`.)
 
 - Starts where [`workloads/scheduling-constraints`](../../workloads/scheduling-constraints/) step 3
   stops.
-- The default constraints that outvoted a preference in [`filter-and-score`](../filter-and-score/)
-  step 3 are these, applied implicitly. Cluster-wide defaults are configured in
+- The default constraints that wore a preference out in [`filter-and-score`](../filter-and-score/)
+  (18 of 20 replicas at a dozen nodes, `PodTopologySpread` falling from 200 to 14 on the busy node) are
+  these, applied implicitly. Cluster-wide defaults are configured in
   [`scheduler-profiles`](../scheduler-profiles/).
 - Step 4 hands off to [`descheduler`](../descheduler/) (`RemovePodsViolatingTopologySpreadConstraint`).
 
