@@ -262,9 +262,20 @@ Kind, Kubernetes v1.37.0, the scheduler static Pod edited the way a lab would ed
   spreading penalty grows with every replica on the node until it overtakes the preference.
 - **A soft taint outvotes a `weight: 100` preference.** One untolerated `PreferNoSchedule` taint on
   the preferred node: `TaintToleration` 0 against 300 elsewhere, `NodeAffinity` 200 against 0. The
-  preference is worth 200 (100 × the plugin's weight of 2) and the taint costs 300 (100 × 3). Six
+  preference is worth 200 and the taint costs 300 (100 × the plugin weights of 2 and 3). Six
   replicas: **6 of 6** reached the node, then **0 of 6** with the soft taint, then **6 of 6** again
   once they tolerated it.
+- **A preferred term's `weight` only matters against other preferred terms.** The scheduler scales the
+  best-matching node to 100, so a lone term scored 200 on the matching node at `weight: 1` and at
+  `weight: 100` alike (6 of 6 Pods on the node at weights 1, 10, 50 and 100). With two terms the weaker
+  one is scaled against the stronger: weight 25 beside weight 100 scored 50. So "weight 100" is not a
+  strong wish; it is the only wish.
+- **Plugin weights decide the soft-taint contest, and they can be changed in a profile.** With the soft
+  taint on the preferred node and `weight: 100`, six replicas, `NodeAffinity` plugin weight 2, 3, 4, 5:
+  **0, 0, 3, 6** on the node. `TaintToleration` plugin weight 3, 2, 1: **0, 1, 3**. The syntax that works
+  is `plugins.multiPoint.enabled: [{name: NodeAffinity, weight: 5}]`, confirmed in `/configz`. The first
+  Pod's margin is `100 × (NodeAffinity weight − TaintToleration weight)`, and the later replicas erode
+  it, which is why a margin of +100 (weight 4) still gave only 3 of 6.
 - **`FailedScheduling` reports one reason per node, and the order is the filter order.** A fleet of
   13 nodes failing four different ways gave `2 Insufficient cpu, 3 node(s) didn't match Pod's node
   affinity/selector, 8 node(s) had untolerated taint(s)`; tolerating the taint gave `5 Insufficient

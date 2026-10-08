@@ -74,7 +74,7 @@ kwok-node-5:  NodeAffinity 200   TaintToleration   0   ...everything else equal.
 kwok-node-0:  NodeAffinity   0   TaintToleration 300   ...everything else equal...  TOTAL 672
 ```
 
-A `weight: 100` preference is worth **200**: 100, times `NodeAffinity`'s plugin weight of 2. One untolerated `PreferNoSchedule` taint costs **300**: `TaintToleration` scores the node with the most of them 0 and the rest 100, times *its* plugin weight of 3. **The most a preference can ask for is less than what one soft taint takes away**, so the preferred node loses by a hundred points before anything else is counted.
+The preference is worth **200** to the node that matches it. The scheduler scales the best-matching node to 100 *whatever the weight*, then multiplies by `NodeAffinity`'s plugin weight of 2. (A lone term with `weight: 1` scores 200 as well; a term's weight only matters against other preferred terms. With a weight-25 term beside a weight-100 one, the weight-25 node scored 50.) One untolerated `PreferNoSchedule` taint costs **300**: `TaintToleration` scores the node with the most of them 0 and the rest 100, times *its* plugin weight of 3. **The most a preference can be worth is less than what one soft taint takes away**, so the preferred node loses by a hundred points before anything else is counted. Making the preference *heavier* cannot help; only the plugin weights can, and those are set in a profile.
 
 Tolerate the soft taint, and `TaintToleration` gives every node 300 again:
 
