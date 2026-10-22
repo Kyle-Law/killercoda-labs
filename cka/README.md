@@ -7,12 +7,12 @@ misleading, and avoids ground the topic folders already cover (`troubleshooting/
 
 ## Status
 
-All design specs, with deliberately no `index.json`: Killercoda only indexes directories that have one,
-so nothing unfinished here can be published by accident. **Four are specced, the rest are ideas.**
+**One built, three specced, the rest ideas.** A spec has deliberately no `index.json`: Killercoda only
+indexes directories that have one, so nothing unfinished here can be published by accident.
 
 | Lab | Domain | Status | Finding |
 |---|---|---|---|
-| [`rbac-subresources`](rbac-subresources/) | Cluster Architecture | Spec: **ready**, two claims to resolve | `kubectl auth can-i get pods/log` says yes while `kubectl logs` is Forbidden: it parses `pods/log` as a Pod named `log` |
+| [`rbac-subresources`](rbac-subresources/) | Cluster Architecture | **Built**, 5 steps | `kubectl auth can-i get pods/log` says yes while `kubectl logs` is Forbidden: it parses `pods/log` as a Pod named `log`. Also `pods/*` grants nothing, and `kubectl --token` is ignored when the kubeconfig has a client certificate |
 | [`hpa-without-requests`](hpa-without-requests/) | Workloads & Scheduling | Spec: steps 1-2 **ready**, 3-4 to resolve | One container without a CPU request breaks the whole HPA, and `kubectl top` still works |
 | [`configmap-three-behaviours`](configmap-three-behaviours/) | Workloads & Scheduling | Spec: **ready**, two claims to resolve | Of three ways to consume one ConfigMap only the volume updates (about 89s), never `env` or `subPath` |
 | [`broken-cluster-capstone`](broken-cluster-capstone/) | Troubleshooting | Spec: assembly, one fault **unverified** | Fix the scheduler first: it hides two of the other faults |
@@ -41,7 +41,7 @@ results in those specs. Nothing in the ideas list below has been run.
 
 **Cluster Architecture, Installation & Configuration (25%)**
 
-- **[`rbac-subresources`](rbac-subresources/)**
+- **[`rbac-subresources`](rbac-subresources/)** — built.
 - **A kubeadm upgrade whose drain will not finish.** A PodDisruptionBudget of `minAvailable: 100%` plus a
   bare Pod needing `--force`. The drain is the lab.
 - **Restore etcd, then find what it did not bring back.** Objects created after the snapshot are gone but
@@ -84,8 +84,8 @@ results in those specs. Nothing in the ideas list below has been run.
 
 ## Where to start
 
-`rbac-subresources` first: the highest exam value, no new components, and the finding is crisp. The
-capstone last, because it reuses faults the other labs prove.
+`rbac-subresources` is built. `hpa-without-requests` and `configmap-three-behaviours` next, each with
+claims still to resolve (see their specs). The capstone last, because it reuses faults the other labs prove.
 
 ## Conventions
 

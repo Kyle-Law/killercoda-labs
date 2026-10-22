@@ -11,7 +11,7 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `troubleshooting/` — Pods, control plane, Services/DNS, nodes, RBAC, resource usage
 - `cluster-admin/` — etcd backup/restore, kubeadm maintenance
 - `cert-manager/` — certificate management as the subject rather than as scenery: where an issuer lives and whose Secret it reads, what a renewal actually changes and which workloads never notice, and ACME run locally against Pebble. One lab built, the rest design specs — see [`cert-manager/README.md`](cert-manager/README.md)
-- `cka/` — the harder parts of the CKA exam by domain, each built around one failure that is silent or misleading: a diagnostic that says yes while the command is Forbidden, an autoscaler with metrics that will not scale, one ConfigMap that three Pods consume three ways. Design specs only — see [`cka/README.md`](cka/README.md)
+- `cka/` — the harder parts of the CKA exam by domain, each built around one failure that is silent or misleading: a diagnostic that says yes while the command is Forbidden, an autoscaler with metrics that will not scale, one ConfigMap that three Pods consume three ways. One lab built, the rest design specs — see [`cka/README.md`](cka/README.md)
 - `helm/` — Helm end to end: releases, chart versions, values, rollbacks, safe deploys, templating
 - `gitops/` — Argo CD: sync/health, drift & self-heal, sync waves & hooks, Helm/Kustomize sources, history & rollback, App-of-Apps & ApplicationSet, a declarative Helm-backed App-of-Apps, the full UI on a multi-node cluster, a self-hosted Gitea source, Gitea webhooks with auto-sync/self-heal/prune; plus standalone Argo Rollouts canary & blue-green
 - `observability/` — the operator pattern, Prometheus Operator, ServiceMonitors
