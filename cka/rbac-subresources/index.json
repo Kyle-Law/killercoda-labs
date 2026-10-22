@@ -1,0 +1,20 @@
+{
+  "title": "The Permission You Granted Isn't the One You Need",
+  "description": "RBAC subresources: why a Role on pods does not cover logs, exec or port-forward, the kubectl diagnostic that answers yes while the command is Forbidden, a wildcard that grants nothing, and a --token test that quietly runs as cluster-admin",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      { "title": "The yes that isn't",                     "text": "step1/text.md", "verify": "step1/verify.sh" },
+      { "title": "Exec needs two rules",                   "text": "step2/text.md", "verify": "step2/verify.sh" },
+      { "title": "An error that does not look like RBAC",  "text": "step3/text.md", "verify": "step3/verify.sh" },
+      { "title": "The wildcard that grants nothing",       "text": "step4/text.md", "verify": "step4/verify.sh" },
+      { "title": "A token that is not the ServiceAccount", "text": "step5/text.md", "verify": "step5/verify.sh" }
+    ],
+    "finish": { "text": "finish.md" }
+  },
+  "backend": { "imageid": "kubernetes-kubeadm-1node" }
+}
