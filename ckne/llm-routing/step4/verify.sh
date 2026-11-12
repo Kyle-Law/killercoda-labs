@@ -22,8 +22,10 @@ ANSWER=/root/answers/step4.txt
   "  ... your answer ..." \
   "  TXT"
 
-# The metric itself -- accept the Prometheus name in either punctuation, since
-# an HPA via prometheus-adapter sees it with underscores.
+# The metric itself -- accept the name in either punctuation. The colon form is
+# the real one (prometheus-adapter's default rules keep it, and the underscore
+# form is NotFound there), but a learner who writes underscores still knows
+# which metric to scale on, and that is what this step tests.
 grep -qE "num_requests_waiting" "$ANSWER" || fail \
   "$ANSWER does not name the metric to scale on." \
   "" \
