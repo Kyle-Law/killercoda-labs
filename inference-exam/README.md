@@ -12,13 +12,13 @@ holds specs only for the gaps.
 
 ## Status
 
-**One built, three specced, the rest ideas.** A spec has deliberately no `index.json`, so Killercoda
+**Two built, two specced, the rest ideas.** A spec has deliberately no `index.json`, so Killercoda
 cannot publish it by accident.
 
 | Lab | Domain | Status | Finding |
 |---|---|---|---|
 | [`draining-model-servers`](draining-model-servers/) | Model server lifecycle | **Built**, 4 steps | A rollout cuts a streaming answer three quarters through, with no error. The kubelet and the server both wait 30s, so raising `terminationGracePeriodSeconds` only reveals the server's clock. An `exec` preStop in a shell-less image fails with one event; the `sleep` action works, and sleep plus the server's drain must fit inside the grace period |
-| [`autoscale-on-queue-depth`](autoscale-on-queue-depth/) | Autoscaling | Steps 1-3 **ready**, step 4 to resolve | The metric is `vllm:num_requests_waiting` with the colon; the underscore form is NotFound. And `AverageValue` hides one replica with eight queued |
+| [`autoscale-on-queue-depth`](autoscale-on-queue-depth/) | Autoscaling | **Built**, 5 steps | A CPU target reads 8% with 23 queued. The metric is `vllm:num_requests_waiting` with the colon; the underscore form is NotFound. Scaled 1 → 5, the new replicas took none of the 42-deep backlog, and `AverageValue` hides one flooded replica among idle ones |
 | [`model-weights-as-images`](model-weights-as-images/) | Model delivery | Steps 1-3 **ready**, step 4 to resolve | A wrong weights reference reports `ImagePullBackOff` on a container whose own image is fine. `subPath` into an image volume works for a directory and fails for a file |
 | [`inference-capstone`](inference-capstone/) | Troubleshooting | Assembly, ordering **unverified** | Four faults on one model server, each from the specs above; the weights fault hides the probe fault |
 
@@ -84,9 +84,9 @@ inference engine tuning (quantisation, batching, KV cache sizing), multi-cluster
 
 `draining-model-servers` is built. Building it corrected its spec twice: in the default case both
 clocks fire at 30s so neither can be blamed alone, and a 20s sleep is enough because the server's drain
-runs after it. `autoscale-on-queue-depth` next; its step 4
-depends on a measurement the `cka/hpa-without-requests` spec also needs, so take that once for both.
-`model-weights-as-images` needs the backend's containerd version checked before anything else. The
+runs after it. `autoscale-on-queue-depth` is built too; building it turned the spec's open question
+("do queued requests move to new replicas?") into its step 4: they do not. `model-weights-as-images`
+next, and it needs the backend's containerd version checked before anything else. The
 capstone last, because it reuses faults the other three prove.
 
 ## Conventions

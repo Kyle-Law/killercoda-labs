@@ -1,0 +1,20 @@
+{
+  "title": "Scaling on the Queue, Not the CPU",
+  "description": "Autoscaling a model server on its own queue depth through prometheus-adapter: a CPU target that never fires, the metric name every guide gets wrong, replicas that arrive and take none of the backlog, and the average that hides a drowning replica",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      { "title": "A full queue and an idle CPU",      "text": "step1/text.md", "verify": "step1/verify.sh" },
+      { "title": "The name from the runbook",         "text": "step2/text.md", "verify": "step2/verify.sh" },
+      { "title": "It scales",                         "text": "step3/text.md", "verify": "step3/verify.sh" },
+      { "title": "And nobody got faster",             "text": "step4/text.md", "verify": "step4/verify.sh" },
+      { "title": "The replica the average hides",     "text": "step5/text.md", "verify": "step5/verify.sh" }
+    ],
+    "finish": { "text": "finish.md" }
+  },
+  "backend": { "imageid": "kubernetes-kubeadm-1node" }
+}
