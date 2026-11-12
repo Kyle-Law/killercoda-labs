@@ -71,7 +71,7 @@ metrics:
 - type: Pods
   pods:
     metric:
-      name: vllm_num_requests_waiting
+      name: "vllm:num_requests_waiting"   # colon kept: prometheus-adapter's default rules do not rename it
     target:
       type: AverageValue
       averageValue: "2"     # more than ~2 queued per replica => add one
