@@ -1,0 +1,19 @@
+{
+  "title": "The Answer That Stops Mid-Sentence",
+  "description": "Draining a model server: why every rollout truncates streamed LLM answers with no error, why raising terminationGracePeriodSeconds does not fix it, the preStop hook that fails with only an event, and the one that works",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "steps": [
+      { "title": "Three quarters of an answer", "text": "step1/text.md", "verify": "step1/verify.sh" },
+      { "title": "Raised, and still cut",          "text": "step2/text.md", "verify": "step2/verify.sh" },
+      { "title": "The hook that never ran",        "text": "step3/text.md", "verify": "step3/verify.sh" },
+      { "title": "Delay the signal, not the kill", "text": "step4/text.md", "verify": "step4/verify.sh" }
+    ],
+    "finish": { "text": "finish.md" }
+  },
+  "backend": { "imageid": "kubernetes-kubeadm-1node" }
+}
