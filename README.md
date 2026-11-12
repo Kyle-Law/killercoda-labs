@@ -15,7 +15,7 @@ CKA exam-prep scenarios, organized by topic so a single lab can be reused across
 - `gitops/` — Argo CD: sync/health, drift & self-heal, sync waves & hooks, Helm/Kustomize sources, history & rollback, App-of-Apps & ApplicationSet, a declarative Helm-backed App-of-Apps, the full UI on a multi-node cluster, a self-hosted Gitea source, Gitea webhooks with auto-sync/self-heal/prune; plus standalone Argo Rollouts canary & blue-green
 - `observability/` — the operator pattern, Prometheus Operator, ServiceMonitors
 - `ai-workloads/` — running, observing, scheduling and queueing AI workloads on Kubernetes, without a GPU
-- `inference-exam/` — the blueprint for a hypothetical performance-based exam on running inference on Kubernetes, mapped onto the labs above, with design specs for the gaps: autoscaling on queue depth, model weights as image volumes. One lab built, draining streamed answers through a rollout — see [`inference-exam/README.md`](inference-exam/README.md)
+- `inference-exam/` — the blueprint for a hypothetical performance-based exam on running inference on Kubernetes, mapped onto the labs above, with design specs for the gaps. Two labs built: draining streamed answers through a rollout, and autoscaling on queue depth — see [`inference-exam/README.md`](inference-exam/README.md)
 - `packaging/` — Helm beyond the basics (failed upgrades and recovery, values file precedence)
 - `kiamol/` — labs following *Learn Kubernetes in a Month of Lunches*, one per day, covering what the topic-first labs above don't already
 
